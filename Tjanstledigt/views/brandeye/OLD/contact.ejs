@@ -1,0 +1,111 @@
+<% include ./partials/cssLinks %>
+  <%include ./partials/header %>
+    <link href="css/contact.css" rel="stylesheet">
+    <section id="contact">
+      <!-- TEST CONTACT -->
+      <div id="grey-box"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+                <div class="card-body bg-grey">
+                  Brandeye Sales & Partner
+                  <br> Ladugatan 13
+                  <br> 25448 Helsingborg
+              </div>
+              <div id="map1" class="map">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <p class="mb-5">Vid frågor om våra produkter och eventuella kontakter, hör av er till oss genom mail eller telefon. Vi svarar
+                  på alla frågor!
+                  <div class="ml-auto text-center">
+                    <a href="tel:+46739173488">
+                      <i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
+                    </a>
+                    <br>
+                    <!-- <p>+46 (0)73 917 3488</p> -->
+                    <a href="tel:+46739173488">+46 (0)73 917 3488</a>
+                    <br>
+                    <hr>
+                  </div>
+                  <div class="mr-auto text-center">
+                    <a href="mailto:henrik@brandeyesales.com">
+                      <i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
+                    </a>
+                    <p>
+                      <a href="mailto:henrik@brandeyesales.com">Henrik Mauritzon</a>
+                    </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <p class="mb-5">
+                  <div class=" text-center">
+                    <img id="henrik" src="img/henrik.jpg" alt="Henrik" srcset="">
+                    <hr>
+                    <p class="mb-5">Grundare </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <style>
+      .map {
+        min-width: 300px;
+        min-height: 300px;
+        width: 100%;
+        height: 100%;
+      }
+
+      .header {
+        background-color: #F5F5F5;
+        color: #36A0FF;
+        height: 70px;
+        font-size: 27px;
+        padding: 10px;
+      }
+    </style>
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/creative.min.js"></script>
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="js/map.js"></script>
+    <script type="text/javascript">
+      jQuery(function ($) {
+        function init_map1() {
+          var myLocation = new google.maps.LatLng(56.0813249, 12.7021321);
+          var mapOptions = {
+            center: myLocation,
+            zoom: 16
+          };
+          var marker = new google.maps.Marker({
+            position: myLocation,
+            title: "Property Location"
+          });
+          var map = new google.maps.Map(document.getElementById("map1"),
+            mapOptions);
+          marker.setMap(map);
+        }
+        init_map1();
+      });
+    </script>
+
+    <%include ./partials/footer %>

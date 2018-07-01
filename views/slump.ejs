@@ -1,0 +1,60 @@
+<% include ./partials/header.ejs %>
+<link rel="stylesheet" href="css/slump.css">
+    <!-- Register Page -->
+    <div class="container">
+        <div class="register">
+
+            <div id="slump" class="slump">
+            </div>
+            <script>
+                function shuffle(array) {
+                    var i = array.length,
+                        j = 0,
+                        temp;
+
+                    while (i--) {
+
+                        j = Math.floor(Math.random() * (i + 1));
+
+                        // swap randomly chosen element with current element
+                        temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+
+                    }
+
+                    return array;
+                }
+
+                var ranNums = shuffle([
+                    "<img src=img/Spelare/olakarlsson.jpg> Ola Karlsson<br>",
+                    "<img src=img/Spelare/davidcarlsson.jpg>David Carlsson<br>",
+                    "<img src=img/Spelare/jonathanhedenbergh.jpg> Jonathan Hedenberg<br>",
+                    "<img src=img/Spelare/sarahartwig.jpg> Sara Hartwig<br>",
+                    "<img src=img/Spelare/jesperkjellström.jpg> Jesper Kjellström<br>",
+                    "<img src=img/Spelare/patriknilsson.jpg> Patrik Nilsson<br>",
+                    "<img src=img/Spelare/patriknilsson.jpg> Dragan Jeremic<br>",
+                    "<img src=img/Spelare/gustavstenberg.jpg> Gustav Stenberg<br>",
+                    "<img src=img/Spelare/helenapixsjö.jpg> Helena Pixsjö<br>",
+                    "<img src=img/Spelare/evelinalundgren.jpg> Evelina Lundgren<br>",
+                    "<img src=img/Spelare/jonathanaxfjord.jpg> Jonatan Axfjord<br>",
+                    "<img src=img/Spelare/patriknilsson.jpg> Larsson Joakim<br> ",
+                    "<img src=img/Spelare/tobbesparge.jpg> Tobbe Spaaarge<br>"
+                ]);
+                document.getElementById("slump").innerHTML = ranNums;
+            </script>
+            <hr>
+            <input type="button" class="btn btn-success btn-block" value="Slumpa om" onClick="window.location.reload()">
+        </div>
+    </div>
+    <!-- //Register Page -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

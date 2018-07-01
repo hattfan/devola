@@ -1,0 +1,36 @@
+<% include ./partials/header.ejs %>
+<link rel="stylesheet" href="css/stats.css">
+    <!-- Register Page -->
+    <div class="container">
+        <div class="register">
+            <h1>Månadsligan</h1>
+            <a class="btn btn-success" href="/statsTotal"><i class="fas fa-chart-pie"></i> Total</a>
+            <a class="btn btn-success"  href="/statsMonth"><i class="fas fa-chart-pie"></i> Månad</a>
+            <a class="btn btn-success" href="/statsWeek"><i class="fas fa-chart-pie"></i> Vecka</a>
+            <a class="btn btn-danger float-right" href="/statsVroom"><i class="fas fa-car"></i> Vroom</a> 
+            
+            <table class="columns">
+                <tr>
+                    <td><div id="Sarah_chart_div" ></div></td>
+                    <td><div id="Anthony_chart_div" ></div></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    
+    <!-- //Register Page -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <!-- Mina script -->
+    <script src="js/chart.js"></script>
+
+</body>
+
+</html>

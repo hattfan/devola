@@ -1,0 +1,43 @@
+
+.register {
+    font-family: "Raleway", sans-serif;
+    margin: 0 auto;
+    margin-top: 2%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 50px;
+}
+
+.slump {
+    margin: 0% 10%;
+}
+
+hr {
+    margin: 30px 0px;
+    border: 2px solid white;
+}
+
+img {
+    height: 40px;
+    border-radius: 100%;
+    margin: 3px;
+}
+
+@media (max-width:768px) {
+    .register {
+        font-size: 10px;
+    }
+}
+
+.register a {
+    margin-bottom: 5px;
+}
+
+.columns {
+    color: white;
+}
+
+.noMargin a{
+    margin-bottom: 0px;
+}

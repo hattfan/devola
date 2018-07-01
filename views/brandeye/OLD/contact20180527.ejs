@@ -1,0 +1,145 @@
+<% include ./partials/cssLinks %>
+  <%include ./partials/header %>
+
+    <link rel="stylesheet" href="css/slider.css">
+    <link href="css/contact2.css" rel="stylesheet">
+
+    <section id="contact">
+      <!-- TEST CONTACT -->
+      <div class="container">
+        <div class="card-deck">
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <i class="fa fa-mobile-phone" aria-hidden="true"></i> Kontakta oss</h2>
+            </div>
+            <div class="card-body">
+              <p class="card-text">Vid frågor om våra produkter och eventuella kontakter, hör av er till oss genom mail eller telefon. Vi svarar
+                på alla frågor!</p>
+              <div class="ml-auto text-center">
+                <a href="tel:+46739173488">
+                  <i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
+                </a>
+                <br>
+                <!-- <p>+46 (0)73 917 3488</p> -->
+                <a href="tel:+46739173488">+46 (0)73 917 3488</a>
+                <br>
+                <hr>
+              </div>
+              <div class="mr-auto text-center">
+                <a href="mailto:henrik@brandeyesales.com">
+                  <i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
+                </a>
+                <p>
+                  <a href="mailto:henrik@brandeyesales.com">Henrik Mauritzon</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <i class="fa fa-group" aria-hidden="true"></i> Teamet</h2>
+            </div>
+            <div class="card-body">
+              <div class="text-center">
+                <p class="card-text"></p>
+                <img id="henrik" src="img/henrik.jpg" alt="Henrik" srcset="">
+                <hr>
+                <p class="mb-5">VD och grundare </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>
+              <i class="fa fa-map-o" aria-hidden="true"></i> Adress</h2>
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              Brandeye Sales & Partner
+              <br> Ladugatan 13
+              <br> 25448 Helsingborg</p>
+            <p class="card-text">
+              <small class="text-muted">Hitta oss</small>
+            </p>
+            <!-- <div id="map1" class="map"></div> -->
+                        
+            <div id="googleMap" style="width:100%;height:400px;"></div>
+            
+
+
+            <script>
+            
+            function myMap() {
+            var mapProp= {
+                center:new google.maps.LatLng(56.0813249, 12.7021321),
+                zoom:16,
+            };
+            var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+            // var marker = new google.maps.Marker({
+            //   position: myLocation,
+            //   title: "Property Location"
+            // });
+            }
+            </script>
+
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIuSU__ivjvr4BatsIUqYyt7UmiylsR0E&callback=myMap"></script>
+          </div>
+        </div>
+      </div>
+    </section>
+    <style>
+      .map {
+        min-width: 300px;
+        min-height: 500px;
+        width: 100%;
+        height: 100%;
+      }
+
+      .header {
+        background-color: #F5F5F5;
+        color: #36A0FF;
+        height: 70px;
+        font-size: 27px;
+        padding: 10px;
+      }
+    </style>
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <script type="text/javascript">
+      jQuery(function ($) {
+        function init_map1() {
+          var myLocation = new google.maps.LatLng(56.0813249, 12.7021321);
+          var mapOptions = {
+            center: myLocation,
+            zoom: 16
+          };
+          var marker = new google.maps.Marker({
+            position: myLocation,
+            title: "Property Location"
+          });
+          var map = new google.maps.Map(document.getElementById("map1"),
+            mapOptions);
+          marker.setMap(map);
+        }
+        init_map1();
+      });
+      
+    </script>
+
+function myMap() {
+  var mapOptions = {
+      center: new google.maps.LatLng(51.5, -0.12),
+      zoom: 10,
+      mapTypeId: google.maps.MapTypeId.HYBRID
+  }
+var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+} -->
+
+    <%include ./partials/footer %>
