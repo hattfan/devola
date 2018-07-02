@@ -41,3 +41,21 @@ img {
 .noMargin a{
     margin-bottom: 0px;
 }
+
+@media (max-width: 768px) {
+    .register {
+        padding: 10px;
+    }
+    .register h1{
+        font-size: 24px;
+    }
+    .register table {
+            table-layout:fixed;
+        }
+        
+    .register table td {
+        white-space: pre-wrap;        
+        text-overflow: clip
+    }
+    
+}
