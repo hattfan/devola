@@ -41,8 +41,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-// var url = "mongodb://127.0.0.1:27017"
-var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball"
+var url = "mongodb://127.0.0.1:27017"
+// var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball"
 
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
@@ -50,6 +50,11 @@ MongoClient.connect(url, (err, client) => {
 
 app.get('/', function (req, res) {
     res.render('index.ejs');
+});
+
+
+app.get('/mathubben', function (req, res) {
+    res.render('mathubben/index.ejs');
 });
 
 app.get('/tusenklubben', function (req, res) {
