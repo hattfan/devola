@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 });
 
 // var url = "mongodb://127.0.0.1:27017"
-var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball"
+var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball" 
 
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
