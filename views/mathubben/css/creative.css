@@ -239,9 +239,9 @@ header.masthead p {
   width: 100%;
   height: 100%;
   text-align: center;
-  opacity: 0;
+  /*opacity: 0;*/
   color: #fff;
-  background: rgba(124, 19, 1, 0.9);
+  background-color: rgba(124, 19, 1, 0);
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
   transition: all 0.2s;
@@ -273,7 +273,8 @@ header.masthead p {
 }
 
 .portfolio-box:hover .portfolio-box-caption {
-  opacity: 1;
+  /*opacity: 1;*/
+  background-color: rgba(124, 19, 1, 0.9);
 }
 
 .portfolio-box:focus {
@@ -331,10 +332,18 @@ header.masthead p {
   
 }
 
-section:nth-child(odd) {
+section:nth-child(even) {
 	background-color: #EEE;
 }
 
 #portfolio{
   padding: 0;
+}
+
+
+@media(max-width:760px) {
+
+  .project-category .text-faded {
+    opacity: 1;
+  }
 }
