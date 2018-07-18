@@ -3,29 +3,31 @@
     <!-- Register Page -->
     <div class="container">
         <div class="register">
-            <h1>Vroomligan</h1>
-            <a class="btn btn-success" href="/statsTotal"><i class="fas fa-chart-pie"></i> Total</a>
-            <a class="btn btn-success"  href="/statsMonth"><i class="fas fa-chart-pie"></i> Månad</a>
-            <a class="btn btn-success" href="/statsWeek"><i class="fas fa-chart-pie"></i> Vecka</a>
-            <a class="btn btn-danger float-right" href="/statsVroom"><i class="fas fa-car"></i> Vroom</a> 
+            <h1>Veckoligan</h1>
+            <% include ./partials/buttons.ejs %>
+
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
                         <th>Namn</th>
-                        <th>Vroom<br>Win</th>
-                        <th>Vroom<br>Lost</th>
-                        <th>Bounty<br>Win</th>
-                        <th>Bounty<br>Lost</th>
+                        <th>SM</th>
+                        <th>VM</th>
+                        <th>FM</th>
+                        <th>%</th>
+                        <th>Mål</th>
+                        <th>Vikt</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% dataname.forEach(player => { %>
                     <tr>
                         <td><%= player.Spelare %></td>
-                        <td><%= player.vroomWinCount%></td>
-                        <td><%= player.vroomLostCount%></td>
-                        <td><%= player.bountyWinCount%></td>
-                        <td><%= player.bountyLostCount%></td>
+                        <td><%= player.Vinster + player.Förluster%></td>
+                        <td><%= player.Vinster %></td>
+                        <td><%= player.Förluster %></td>
+                        <td><%= Math.round(player.Vinster/(player.Förluster+player.Vinster)*1000)/10 %> %</td>
+                        <td><%= player.GjordaMål-player.InsläpptaMål %></td>
+                        <td><%= Math.round(((Math.pow(player.Vinster/((player.Förluster) + (player.Vinster)),3) * player.Vinster) + Math.round(player.GjordaMål-player.InsläpptaMål)*0.001)*100)/100 %></td>
                     </tr>
                     <% }) %>
                 </tbody>

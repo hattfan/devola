@@ -2,18 +2,21 @@
 //! Uppdatera resultat!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//* Ändrad...
+
+//TODO Ändrad...
 var rp = require('request-promise');
 var MongoClient = require("mongodb").MongoClient;
 var winCounter, loseCounter, madeGoalCounter, lostGoalCounter, procent, viktning;
+var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball" 
+//mongodb://127.0.0.1:27017
 
-MongoClient.connect("mongodb://127.0.0.1:27017", (err, client) => {
+MongoClient.connect(url, (err, client) => {
   var db = client.db("foosball");
   if (err) throw err;
-  db.collection("stat").distinct('Månad', function (err, months) {
+  db.collection("stat").distinct('Vecka', function (err, veckor) {
     if (err) throw err
-    for (let x = 0; x < months.length; x++) {
-      db.collection("stat").find({ 'Månad': months[x] }).toArray(function (err, data) {
+    for (let x = 0; x < veckor.length; x++) {
+      db.collection("stat").find({ 'Vecka': veckor[x] }).toArray(function (err, data) {
         if (err) throw err
         var spelare = []
         for (let i = 0; i < data.length; i++) {
@@ -31,28 +34,28 @@ MongoClient.connect("mongodb://127.0.0.1:27017", (err, client) => {
           for (let i = 0; i < data.length; i++) {
             if (data[i].Lag1Spelare1 == unique[ii]) {
               winCounter = winCounter + 1;
-              madeGoalCounter = madeGoalCounter + data[i].Lag1
-              lostGoalCounter = lostGoalCounter + data[i].Lag2
+              madeGoalCounter = madeGoalCounter + Number(data[i].Lag1)
+              lostGoalCounter = lostGoalCounter + Number(data[i].Lag2)
             } else if (data[i].Lag1Spelare2 == unique[ii]) {
               winCounter = winCounter + 1;
-              madeGoalCounter = madeGoalCounter + data[i].Lag1
-              lostGoalCounter = lostGoalCounter + data[i].Lag2
+              madeGoalCounter = madeGoalCounter + Number(data[i].Lag1)
+              lostGoalCounter = lostGoalCounter + Number(data[i].Lag2)
             } else if (data[i].Lag2Spelare1 == unique[ii]) {
               loseCounter = loseCounter + 1;
-              madeGoalCounter = madeGoalCounter + data[i].Lag2
-              lostGoalCounter = lostGoalCounter + data[i].Lag1
+              madeGoalCounter = madeGoalCounter + Number(data[i].Lag2)
+              lostGoalCounter = lostGoalCounter + Number(data[i].Lag1)
 
             } else if (data[i].Lag2Spelare2 == unique[ii]) {
               loseCounter = loseCounter + 1;
-              madeGoalCounter = madeGoalCounter + data[i].Lag2
-              lostGoalCounter = lostGoalCounter + data[i].Lag1
+              madeGoalCounter = madeGoalCounter + Number(data[i].Lag2)
+              lostGoalCounter = lostGoalCounter + Number(data[i].Lag1)
             }
           }
           procent = (winCounter / (winCounter + loseCounter));
           viktning = Math.round((Math.pow(procent, 3) * winCounter + (0.001 * (madeGoalCounter - lostGoalCounter)))*100)/100
 
           var playerStats = {
-            'Månad': months[x],
+            vecka: veckor[x],
             'Spelare': unique[ii],
             'Vinster': winCounter,
             'Förluster': loseCounter,
@@ -60,7 +63,7 @@ MongoClient.connect("mongodb://127.0.0.1:27017", (err, client) => {
             'InsläpptaMål': lostGoalCounter,
             'Viktning': viktning
           }
-          db.collection('playerMonth').insert(playerStats, function (err, rec) {
+          db.collection('playerWeek').insert(playerStats, function (err, rec) {
             console.log('Lagt in ' + rec.insertedCount)
           })
         }

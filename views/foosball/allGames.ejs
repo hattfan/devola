@@ -18,16 +18,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% dataname.forEach(player => { %>
+                    <% dataname.forEach(stats => { %>
                     <tr>
-                        <td>stats["Tidstämpel"]</td>
-                        <td>stats["Lag1Spelare1"]</td>
-                        <td>stats["Lag1Spelare2"]</td>
-                        <td>stats["Lag1"]</td>
-                        <td>stats["Lag2Spelare1"]</td>
-                        <td>stats["Lag2Spelare2"]</td>
-                        <td>stats["Lag2"]</td>
-                        <td><a name="" id="" class="btn btn-danger noMargin" href="/removeGame/<%= stats['_id'] %>" role="button">Tag bort</a></td>
+                        <td><%= stats["Tidstämpel"] %></td>
+                        <td><%= stats["Lag1Spelare1"] %></td>
+                        <td><%= stats["Lag1Spelare2"] %></td>
+                        <td><%= stats["Lag1"] %></td>
+                        <td><%= stats["Lag2Spelare1"] %></td>
+                        <td><%= stats["Lag2Spelare2"] %></td>
+                        <td><%= stats["Lag2"] %></td>
+                        <td><a name="" id="" class="btn btn-danger noMargin" href="/foosball/removeGame/<%= stats['_id'] %>" role="button">Tag bort</a></td>
                     </tr>
                     <% }) %>
                 </tbody>

@@ -48,86 +48,81 @@ MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
         if (err) throw err;
 
-app.get('/', function (req, res) {
-    res.render('index.ejs');
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Foosball Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/foosball', function (req, res) {
+    res.render('foosball/index.ejs');
 });
 
-
-app.get('/mathubben', function (req, res) {
-    res.render('mathubben/index.ejs');
+app.get('/foosball/tusenklubben', function (req, res) {
+    res.render('foosball/tusenklubben.ejs');
 });
 
-app.get('/tusenklubben', function (req, res) {
-    res.render('tusenklubben.ejs');
+app.get('/foosball/slump', function (req, res) {
+    res.render('foosball/slump.ejs');
 });
 
-
-app.get('/slump', function (req, res) {
-    res.render('slump.ejs');
-});
-
-app.get('/reglanding', function (req, res) {
-    res.render('reglanding.ejs');
+app.get('/foosball/reglanding', function (req, res) {
+    res.render('foosball/reglanding.ejs');
 });
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//! ADMIN ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Foosball ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-app.get('/admin', function (req, res) {
-    res.render('adminLanding.ejs');
+app.get('/foosball/admin', function (req, res) {
+    res.render('foosball/adminLanding.ejs');
 });
 
-app.get('/data/vecka', function (req, res) {
+app.get("/foosball/removeGame/:id", (req, res) => {
+    //find the campground with provided id in DB
+
+    var o_id = new mongo.ObjectId(req.params.id)
+
+    // var parameters = req.params
+
+    db.collection("stat").deleteOne({'_id':o_id},function (err, data) {
+        if (err) throw err
+        // console.log(data)
+        res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
+    });
+}); 
+
+app.get("/foosball/leagueUpdate", (req, res) => {
+    require(__dirname + "/views/foosball/js/mongo/statsVeckaUpdate.js")
+    require(__dirname + "/views/foosball/js/mongo/statsTotalUpdate.js")
+    require(__dirname + "/views/foosball/js/mongo/statsMånadUpdate.js")
+    res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
+
+})
+
+//!History route
+app.get('/foosball/history', function (req, res) {
+    db.collection("playerWeek").distinct('vecka', function(err, veckor){
+        res.render('foosball/history.ejs', {veckor:JSON.stringify(veckor)});
+    })
+});
+//!Data route 
+app.get('/foosball/data/vecka', function (req, res) {
     db.collection("playerWeek").distinct('vecka', function(err, veckor){
         res.json(veckor)
     })
 });
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-app.get('/history', function (req, res) {
-    db.collection("playerWeek").distinct('vecka', function(err, veckor){
-        res.render('history.ejs', {veckor:JSON.stringify(veckor)});
-    })
+app.get('/foosball/newPlayer', function (req, res) {
+    res.render('foosball/newPlayer.ejs');
 });
 
-app.get('/newPlayer', function (req, res) {
-    res.render('newPlayer.ejs');
+app.get('/foosball/newPlayerLanding', function (req, res) {
+    res.render('foosball/newPlayerLanding.ejs');
 });
 
-app.get('/newPlayerLanding', function (req, res) {
-    res.render('newPlayerLanding.ejs');
-});
-
-app.get("/remove/:id", (req, res) => {
-    //find the campground with provided id in DB
-
-    var o_id = new mongo.ObjectId(req.params.id)
-        // console.log(o_id)
-    db.collection("aktiva").deleteOne({'_id':o_id},function (err, data) {
-        if (err) throw err
-        // console.log(data)
-        res.render('removePlayerLanding.ejs')
-    })
-}); 
-
-app.get('/removePlayer', function (req, res) {
-
-    db.collection("aktiva").find({}).toArray(function (err, data) {
-        if (err) throw err
-        // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
-        res.render('removePlayer.ejs', {data:data});
-    })
-});
-
-app.get('/slumpPlayers', function (req, res) {
-    db.collection("aktiva").find({}).toArray(function (err, data) {
-        if (err) throw err
-        // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
-        res.render('slumpPlayers.ejs', {data:data});
-    })
-})
-
-app.post("/newPlayer", function (req, res) {
+app.post("/foosball/newPlayer", function (req, res) {
     var datum = new Date();
     
     var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
@@ -163,16 +158,52 @@ app.post("/newPlayer", function (req, res) {
         console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
     })
 
-    res.redirect("/newPlayerLanding");
+    res.redirect("/foosball/newPlayerLanding");
 })
 
-//!!!END ADMIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-app.get('/register', function (req, res) {
+//! End Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Remove player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get("/foosball/remove/:id", (req, res) => {
+    //find the campground with provided id in DB
+
+    var o_id = new mongo.ObjectId(req.params.id)
+        // console.log(o_id)
+    db.collection("aktiva").deleteOne({'_id':o_id},function (err, data) {
+        if (err) throw err
+        // console.log(data)
+        res.render('foosball/removePlayerLanding.ejs')
+    })
+}); 
+
+app.get('/foosball/removePlayer', function (req, res) {
+
+    db.collection("aktiva").find({}).toArray(function (err, data) {
+        if (err) throw err
+        // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+        res.render('foosball/removePlayer.ejs', {data:data});
+    })
+});
+
+//! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/foosball/slumpPlayers', function (req, res) {
+    db.collection("aktiva").find({}).toArray(function (err, data) {
+        if (err) throw err
+        // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+        res.render('foosball/slumpPlayers.ejs', {data:data});
+    })
+})
+
+app.get('/foosball/register', function (req, res) {
     db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
         if (err) throw err
 
-        res.render('register.ejs', { data: data });
+        res.render('foosball/register.ejs', { data: data });
     })
 })
 
@@ -180,24 +211,24 @@ app.get('/register', function (req, res) {
 //! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-app.get('/statLanding', function (req, res) {
-    res.render('statLanding.ejs');
+app.get('/foosball/statLanding', function (req, res) {
+    res.render('foosball/statLanding.ejs');
 });
 
-app.get('/statsWeek', function (req, res) {
+app.get('/foosball/statsWeek', function (req, res) {
     var datum = new Date();
+    // datum.setDate(datum.getDate() + 5);
     var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
-    var månad = datum.getFullYear() + ' - ' + datum.getMonth()
 
     console.log(vecka)
     db.collection("playerWeek").find({ 'vecka': vecka }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
         if (err) throw err
         // console.log(data)
-        res.render("statWeek.ejs", { dataname: data, vecka: vecka })
+        res.render("foosball/statWeek.ejs", { dataname: data, vecka: vecka })
     })
 })
 
-app.get('/statsMonth', function (req, res) {
+app.get('/foosball/statsMonth', function (req, res) {
     var datum = new Date();
 
     var månad = datum.getFullYear() + ' - ' + (datum.getMonth()+1)
@@ -205,29 +236,37 @@ app.get('/statsMonth', function (req, res) {
     db.collection("playerMonth").find({ 'Månad': månad }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
         if (err) throw err
         // console.log(data)
-        res.render("statMonth.ejs", { dataname: data, månad: månad })
+        res.render("foosball/statMonth.ejs", { dataname: data, månad: månad })
     })
 })
 
-app.get('/statsVroom', function (req, res) {
+app.get('/foosball/statsVroom', function (req, res) {
     db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
         if (err) throw err
-        res.render("statVroom.ejs", { dataname: data })
+        res.render("foosball/statVroom.ejs", { dataname: data })
     })
 })
 
 
-app.get('/statsTotal', function (req, res) {
+app.get('/foosball/statsTotal', function (req, res) {
     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
         if (err) throw err
-        res.render("statTotal.ejs", { dataname: data })
+        res.render("foosball/statTotal.ejs", { dataname: data })
     })
 })
 
-//! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+app.get('/foosball/allGames', function (req, res) {
+
+    db.collection("stat").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+        if (err) throw err
+
+        res.render("foosball/allGames.ejs", { dataname: data, moment: moment })
+    })
+})
+
 
 // CREATE - add new campground to DB
-app.post("/resultat", function (req, res) {
+app.post("/foosball/resultat", function (req, res) {
     var Lag1Matchvinst, Lag2Matchvinst;
     var Lag1 = Number(req.body.goalTeam1)
     var Lag2 = Number(req.body.goalTeam2)
@@ -240,8 +279,9 @@ app.post("/resultat", function (req, res) {
         Lag2Matchvinst = 1
     }
     var datum = new Date();
+    // datum.setDate(datum.getDate() + 5);
     var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
-    var månad = datum.getFullYear() + ' - ' + (datum.getMonth()+1)
+    var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
 
     // get data from the form
     var newPost = {
@@ -271,166 +311,173 @@ app.post("/resultat", function (req, res) {
     db.collection("stat").insert(newPost, function (err, resDB) {
         if (err) throw err
         console.log('Inlagd match ' + resDB.insertedCount)
-    })
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!! VECKO-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    var spelareloggade = [], insertDB = {};
-    db.collection('playerWeek').find({ 'vecka': vecka }).toArray(function (err, res) {
-        if (err) throw err
-        var pushArr = [];
-        for (const key in spelare) {
-            if (spelare.hasOwnProperty(key)) {
-                const spelarenr = spelare[key];
-                res.forEach(spelarStat => {
-                    if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                        spelareloggade.push(spelarenr)
-                        var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                        // console.log(query)
-                        pushArr.push(query)
-                        db.collection('playerWeek').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
-                                                            'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning'] } }, function (err, res) {
-                            if (err) throw err
-                            // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
-                        })
-                    }
-                })
-            };
-        }
-        for (let i = 0; i < spelareArr.length; i++) {
-            if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                insertDB = {"vecka": vecka,"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2, 
-                            "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001)}
-                db.collection('playerWeek').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    // console.log('Insertade ' + spelareArr[i])
-                })
-            } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                insertDB = {"vecka": vecka,"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001)}
-                db.collection('playerWeek').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    // console.log('Insertade ' + spelareArr[i])
-                })
-            }
-        }
-    })
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!! MÅNADS-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    var spelareloggade = [], insertDB = {};
-    db.collection('playerMonth').find({ 'Månad': månad }).toArray(function (err, res) {
-        if (err) throw err
-        var pushArr = [];
-        for (const key in spelare) {
-            if (spelare.hasOwnProperty(key)) {
-                const spelarenr = spelare[key];
-                res.forEach(spelarStat => {
-                    if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                        spelareloggade.push(spelarenr)
-                        var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                        // console.log(query)
-                        pushArr.push(query)
-                        db.collection('playerMonth').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
-                                                            'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning']} }, function (err, res) {
-                            if (err) throw err
-                            // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
-                        })
-                    }
-                })
-            };
-        }
-        for (let i = 0; i < spelareArr.length; i++) {
-            if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                insertDB = {'Månad':månad,"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2,
-                "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001)}
-                db.collection('playerMonth').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    console.log('Insertade ' + spelareArr[i])
-                })
-            } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                insertDB = {'Månad':månad,"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001)}
-                db.collection('playerMonth').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    console.log('Insertade ' + spelareArr[i])
-                })
-            }
-        }
-    })
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!! TOTAL-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    var spelareloggade = [], insertDB = {};
-    db.collection('playerTotal').find({}).toArray(function (err, res) {
-        if (err) throw err
-        var pushArr = [];
-        for (const key in spelare) {
-            if (spelare.hasOwnProperty(key)) {
-                const spelarenr = spelare[key];
-                res.forEach(spelarStat => {
-                    if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                        spelareloggade.push(spelarenr)
-                        var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                        // console.log(query)
-                        pushArr.push(query)
-                        db.collection('playerTotal').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
-                                                            'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning'], 'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']} }, function (err, res) {
-                            if (err) throw err
-                            // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
-                        })
-                    }
-                })
-            };
-        }
-        for (let i = 0; i < spelareArr.length; i++) {
-            if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                insertDB = {"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2,
-                "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001), 'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']}
-                db.collection('playerTotal').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    console.log('Insertade ' + spelareArr[i])
-                })
-            } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                insertDB = {"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001),'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']}
-                db.collection('playerTotal').insert(insertDB, function (err, res) {
-                    if (err) throw err
-                    console.log('Insertade ' + spelareArr[i])
-                })
-            }
-        }
-    })
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!! VROOM-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    vroomlogg = {}, vromTot=[];    
-    db.collection('playerVroomBounty').find().toArray(function(err,res){
-        if(err) throw err
-        for (const key in spelare) {
-            if (spelare.hasOwnProperty(key)) {
-                const spelarenr = spelare[key];
-                res.forEach(spelarStat => {
-                    if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                        spelareloggade.push(spelarenr)
-                        var query = vroomEval(spelare, spelarStat, req, Lag1, Lag2)
-                        
-                        db.collection('playerVroomBounty').update({ '_id': spelarStat['_id'] }, { $set: { 'vroomWinCount':query.vroomWinCount,'vroomLostCount':query.vroomLostCount,
-                                        'bountyWinCount':query.bountyWinCount,'bountyLostCount':query.bountyLostCount} }, function (err, res) {
-                            if (err) throw err
-                        })
-                    }
-                })
-            };
-        }    
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!! VECKO-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        var spelareloggade = [], insertDB = {};
+        db.collection('playerWeek').find({ 'vecka': vecka }).toArray(function (err, res) {
+            if (err) throw err
+            console.log(res)
+            var pushArr = [];
+            for (const key in spelare) {
+                console.log('KEY')
+                console.log(key)
+
+                if (spelare.hasOwnProperty(key)) {
+                    const spelarenr = spelare[key];
+                    res.forEach(spelarStat => {
+                        if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
+                            spelareloggade.push(spelarenr)
+                            var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
+                            // console.log(query)
+                            pushArr.push(query)
+                            db.collection('playerWeek').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
+                                                                'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning'] } }, function (err, res) {
+                                if (err) throw err
+                                // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
+                            })
+                        }
+                    })
+                };
+            }
+            for (let i = 0; i < spelareArr.length; i++) {
+                if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
+                    insertDB = {"vecka": vecka,"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2, 
+                                "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001)}
+                    db.collection('playerWeek').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        // console.log('Insertade ' + spelareArr[i])
+                    })
+                } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
+                    insertDB = {"vecka": vecka,"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
+                                "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001)}
+                    db.collection('playerWeek').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        // console.log('Insertade ' + spelareArr[i])
+                    })
+                }
+            }
+        })
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!! MÅNADS-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        var spelareloggade = [], insertDB = {};
+        db.collection('playerMonth').find({ 'Månad': månad }).toArray(function (err, res) {
+            if (err) throw err
+            var pushArr = [];
+            for (const key in spelare) {
+                if (spelare.hasOwnProperty(key)) {
+                    const spelarenr = spelare[key];
+                    res.forEach(spelarStat => {
+                        if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
+                            spelareloggade.push(spelarenr)
+                            var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
+                            // console.log(query)
+                            pushArr.push(query)
+                            db.collection('playerMonth').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
+                                                                'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning']} }, function (err, res) {
+                                if (err) throw err
+                                // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
+                            })
+                        }
+                    })
+                };
+            }
+            for (let i = 0; i < spelareArr.length; i++) {
+                if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
+                    insertDB = {'Månad':månad,"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2,
+                    "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001)}
+                    db.collection('playerMonth').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        console.log('Insertade ' + spelareArr[i])
+                    })
+                } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
+                    insertDB = {'Månad':månad,"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
+                                "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001)}
+                    db.collection('playerMonth').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        console.log('Insertade ' + spelareArr[i])
+                    })
+                }
+            }
+        })
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!! TOTAL-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        var spelareloggade = [], insertDB = {};
+        db.collection('playerTotal').find({}).toArray(function (err, res) {
+            if (err) throw err
+            var pushArr = [];
+            for (const key in spelare) {
+                if (spelare.hasOwnProperty(key)) {
+                    const spelarenr = spelare[key];
+                    res.forEach(spelarStat => {
+                        if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
+                            spelareloggade.push(spelarenr)
+                            var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
+                            // console.log(query)
+                            pushArr.push(query)
+                            db.collection('playerTotal').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
+                                                                'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning'], 'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']} }, function (err, res) {
+                                if (err) throw err
+                                // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
+                            })
+                        }
+                    })
+                };
+            }
+            for (let i = 0; i < spelareArr.length; i++) {
+                if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
+                    insertDB = {"Spelare": spelareArr[i],"Vinster": Lag1Matchvinst,"Förluster": Lag2Matchvinst,"GjordaMål": Lag1,"InsläpptaMål": Lag2,
+                    "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001), 'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']}
+                    db.collection('playerTotal').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        console.log('Insertade ' + spelareArr[i])
+                    })
+                } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
+                    insertDB = {"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
+                                "Viktning": (Math.round((Math.pow((Lag2Matchvinst/(Lag2Matchvinst+Lag1Matchvinst)),3) * Lag2Matchvinst)*100)/100 + (Lag2-Lag1)*0.001),'SpeladeMatcher':query['SpeladeMatcher'],'Procent':query['Procent']}
+                    db.collection('playerTotal').insert(insertDB, function (err, res) {
+                        if (err) throw err
+                        console.log('Insertade ' + spelareArr[i])
+                    })
+                }
+            }
+        })
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!! VROOM-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        vroomlogg = {}, vromTot=[];    
+        db.collection('playerVroomBounty').find().toArray(function(err,res){
+            if(err) throw err
+            for (const key in spelare) {
+                if (spelare.hasOwnProperty(key)) {
+                    const spelarenr = spelare[key];
+                    res.forEach(spelarStat => {
+                        if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
+                            spelareloggade.push(spelarenr)
+                            var query = vroomEval(spelare, spelarStat, req, Lag1, Lag2)
+                            
+                            db.collection('playerVroomBounty').update({ '_id': spelarStat['_id'] }, { $set: { 'vroomWinCount':query.vroomWinCount,'vroomLostCount':query.vroomLostCount,
+                                            'bountyWinCount':query.bountyWinCount,'bountyLostCount':query.bountyLostCount} }, function (err, res) {
+                                if (err) throw err
+                            })
+                        }
+                    })
+                };
+            }    
+        })
+        
+
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!! KLART !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        res.redirect("/foosball/reglanding");
     })
-            
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!! KLART !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    res.redirect("/reglanding");
 })
 
 // var portSettings = process.env.PORT
@@ -524,6 +571,14 @@ function vroomEval(spelare, x, req, l1, l2){
 }
 
 })
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Mathubben routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/mathubben', function (req, res) {
+    res.render('mathubben/index.ejs');
+});
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!   Portfolio routes      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

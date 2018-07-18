@@ -29,21 +29,21 @@ MongoClient.connect("mongodb://127.0.0.1:27017", (err, client) => {
       for (let i = 0; i < data.length; i++) {
         if (data[i].Lag1Spelare1 == unique[ii]) {
           winCounter = winCounter + 1;
-          madeGoalCounter = madeGoalCounter + data[i].Lag1
-          lostGoalCounter = lostGoalCounter + data[i].Lag2
+          madeGoalCounter = madeGoalCounter + Number(data[i].Lag1)
+          lostGoalCounter = lostGoalCounter + Number(data[i].Lag2)
         } else if (data[i].Lag1Spelare2 == unique[ii]) {
           winCounter = winCounter + 1;
-          madeGoalCounter = madeGoalCounter + data[i].Lag1
-          lostGoalCounter = lostGoalCounter + data[i].Lag2
+          madeGoalCounter = madeGoalCounter + Number(data[i].Lag1)
+          lostGoalCounter = lostGoalCounter + Number(data[i].Lag2)
         } else if (data[i].Lag2Spelare1 == unique[ii]) {
           loseCounter = loseCounter + 1;
-          madeGoalCounter = madeGoalCounter + data[i].Lag2
-          lostGoalCounter = lostGoalCounter + data[i].Lag1
+          madeGoalCounter = madeGoalCounter + Number(data[i].Lag2)
+          lostGoalCounter = lostGoalCounter + Number(data[i].Lag1)
 
         } else if (data[i].Lag2Spelare2 == unique[ii]) {
           loseCounter = loseCounter + 1;
-          madeGoalCounter = madeGoalCounter + data[i].Lag2
-          lostGoalCounter = lostGoalCounter + data[i].Lag1
+          madeGoalCounter = madeGoalCounter + Number(data[i].Lag2)
+          lostGoalCounter = lostGoalCounter + Number(data[i].Lag1)
         }
       }
       procent = (winCounter / (winCounter + loseCounter));

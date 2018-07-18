@@ -1,4 +1,4 @@
-fetch('../data/vecka')
+fetch('../foosball/data/vecka')
     .then(
         function (response) {
             if (response.status !== 200) {
