@@ -1,18 +1,16 @@
 <% include ./partials/header.ejs %>
 <link rel="stylesheet" href="css/stats.css">
+<link rel="stylesheet" href="css/chart.css">
     <!-- Register Page -->
     <div class="container">
         <div class="register">
-            <h1>Månadsligan</h1>
+            <h1>Historik</h1>
             <% include ./partials/buttons.ejs %>
-            
-            <table class="columns">
-                <tr>
-                    <td><div id="Sarah_chart_div" ></div></td>
-                    <td><div id="Anthony_chart_div" ></div></td>
-                </tr>
-            </table>
-
+            <hr>
+            <h2>Veckoliga</h2>
+            <div class="chart" id="vecko_chart" ></div>
+            <h2>Månadsliga</h2>
+            <div class="chart" id="månad_chart" ></div>
         </div>
     </div>
     
@@ -26,7 +24,9 @@
         crossorigin="anonymous"></script>
 
     <!-- Mina script -->
-    <script src="js/chart.js"></script>
+    <!-- <script src="js/veckochart.js"></script> -->
+    <!-- <script src="js/månadchart.js"></script> -->
+    <script src="js/charts.js"></script>
 
 </body>
 

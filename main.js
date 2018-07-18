@@ -103,10 +103,34 @@ app.get('/foosball/history', function (req, res) {
         res.render('foosball/history.ejs', {veckor:JSON.stringify(veckor)});
     })
 });
-//!Data route 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! data-routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get('/foosball/data/vecka', function (req, res) {
-    db.collection("playerWeek").distinct('vecka', function(err, veckor){
-        res.json(veckor)
+    db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, data) {
+        if (err) throw err
+        res.json(data)
+
+    })
+});
+
+app.get('/foosball/data/month', function (req, res) {
+    db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, data) {
+        if (err) throw err
+        res.json(data)
+    })
+});
+
+app.get('/foosball/data', function (req, res) {
+    db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, monthData) {
+        if (err) throw err
+        db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, veckoData) {
+            if (err) throw err
+            var data ={}
+            data.month = monthData
+            data.vecka = veckoData
+            res.json(data)
+        })
     })
 });
 
@@ -125,8 +149,10 @@ app.get('/foosball/newPlayerLanding', function (req, res) {
 app.post("/foosball/newPlayer", function (req, res) {
     var datum = new Date();
     
-    var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
-    var månad = datum.getFullYear() + ' - ' + (datum.getMonth()+1)
+    var månad = x.Datum.getFullYear() + ' - ' + (x.Datum.getMonth() + 1)
+    var vecka = moment(x.Datum, "MM-DD-YYYY").week()
+    moment(x.Datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+    vecka = x.Datum.getFullYear() + ' - ' + vecka
 
     var newPlayer = {'Spelare': req.body.playerNamn}
     db.collection("aktiva").insert(newPlayer, function (err, resDB) {
@@ -218,9 +244,11 @@ app.get('/foosball/statLanding', function (req, res) {
 app.get('/foosball/statsWeek', function (req, res) {
     var datum = new Date();
     // datum.setDate(datum.getDate() + 5);
-    var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
-
-    console.log(vecka)
+    
+    var vecka = moment(datum, "MM-DD-YYYY").week()
+    moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+    vecka = datum.getFullYear() + ' - ' + vecka
+    
     db.collection("playerWeek").find({ 'vecka': vecka }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
         if (err) throw err
         // console.log(data)
@@ -280,7 +308,10 @@ app.post("/foosball/resultat", function (req, res) {
     }
     var datum = new Date();
     // datum.setDate(datum.getDate() + 5);
-    var vecka = datum.getFullYear() + ' - ' + moment(datum, "MM-DD-YYYY").week()
+    var vecka = moment(datum, "MM-DD-YYYY").week()
+    moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+    vecka = datum.getFullYear() + ' - ' + vecka
+
     var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
 
     // get data from the form
@@ -619,4 +650,12 @@ app.get('/brandeye/recept',function(req,res){
 });
 app.get('/brandeye/blanco',function(req,res){
 	res.render('brandeye/blanco.ejs');
+});
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! BLANK route !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/', function (req, res) {
+    res.send('Wrong route, try again');
 });

@@ -63,6 +63,7 @@ MongoClient.connect(url, (err, client) => {
           'Viktning': viktning
         }
         db.collection('playerTotal').insert(playerStats, function (err, rec) {
+          console.log('Lagt in ' + rec.insertedCount)
         })
       }
     });
