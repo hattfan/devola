@@ -218,12 +218,13 @@ app.get('/foosball/removePlayer', function (req, res) {
 //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 app.get('/foosball/slumpPlayers', function (req, res) {
-    db.collection("aktiva").find({}).toArray(function (err, data) {
+    db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
         if (err) throw err
         // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         res.render('foosball/slumpPlayers.ejs', {data:data});
     })
 })
+
 
 app.get('/foosball/register', function (req, res) {
     db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
@@ -658,4 +659,12 @@ app.get('/brandeye/blanco',function(req,res){
 
 app.get('/', function (req, res) {
     res.send('Wrong route, try again');
+});
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! FOOSBALL STORE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/worldoffoosball/',function(req,res){
+	res.render('worldoffoosball/index.ejs');
 });

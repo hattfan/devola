@@ -1,20 +1,24 @@
 <% include ./partials/header.ejs %>
     <link rel="stylesheet" href="css/stats.css">
+    <link rel="stylesheet" href="css/slumpAlt.css">
     <!-- Register Page -->
     <div class="container">
         <div class="register">
-            <h1> <i class="fas fa-random    "></i> Spelarslumpen</h1>
-            <table class="table table-dark table-striped">
+            <h1>
+            <i class="fas fa-random    "></i> Spelarslumpen</h1>
+            <div class="row">
+                <% data.forEach(player => { %>
 
-                <tbody>
-                    <% data.forEach(player => { %>
-                        <tr>
-                            <td><a name="" id="slump" class="btn btn-danger" role="button">Ej med</a> <%= player.Spelare %> </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
-            </table>
-        </div>
+                    <div class="col-lg-4 player">
+                        <i class="fas fa-user-secret fa-3x"></i>
+                        <br>
+                        <%= player.Spelare %>
+                    </div>
+                <% }) %>
+            </div>
+
+        <button id="slump" class="btn btn-info btn-block" role="button">Slumpa</button>
+    </div>
     </div>
     <!-- //Register Page -->
 

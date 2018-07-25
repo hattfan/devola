@@ -1,15 +1,26 @@
-var btn = document.getElementById('slump');
-var elements = document.querySelectorAll("a");
+// var elements = document.getElementsByClassName("player");
+var elements = document.getElementsByClassName("fas fa-user-secret fa-3x");
 
-elements.forEach(btn => {
+for (let i = 0; i < elements.length; i++) {
+    const btn = elements[i];
     btn.addEventListener("click", function () {
-        if (btn.innerHTML=="Ej med") {
-            btn.innerHTML = "Är med";
-            btn.className = "btn btn-success"
-        }
-        else{
-            btn.innerHTML = "Ej med";
-            btn.className = "btn btn-danger";
-        } 
+        console.log(btn.className)
+
+        // if(btn.className == "fas fa-user-secret fa-3x") {
+        //     btn.className == "fas user-astronaut fa-3x"
+        // } else if {
+        //     btn.className == "fas user-secret fa-3x"
+        // }
+        btn.classList.toggle("playerYes");
+        
     });
+}
+
+document.getElementById('slump').addEventListener("click",function(){
+    var slumpas = document.getElementsByClassName("btn-success");
+    for (let i = 0; i < slumpas.length; i++) {
+        const element = slumpas[i];
+        console.log(element.innerHTML)
+    }
+
 })
