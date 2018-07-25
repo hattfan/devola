@@ -47,9 +47,19 @@ div.item .link-i {
 div.item.blue {
   background-color: #34495e;
 }
+
 div.item.blue .link-i {
   color: #34495e;
 }
+
+div.item.orange {
+  background-color: #d1843b
+}
+
+div.item.orange .link-i{
+  background-color: #d1843b
+}
+
 div.item.red {
   background-color: #e74c3c;
 }
@@ -86,4 +96,10 @@ div.item .imageoverlay {
   position: absolute;
   top: 8px;
   left: 16px;
+}
+
+@media (max-width: 768px){
+  .item {
+    font-size: 10px;
+  }
 }
