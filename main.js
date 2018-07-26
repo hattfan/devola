@@ -149,10 +149,10 @@ app.get('/foosball/newPlayerLanding', function (req, res) {
 app.post("/foosball/newPlayer", function (req, res) {
     var datum = new Date();
     
-    var månad = x.Datum.getFullYear() + ' - ' + (x.Datum.getMonth() + 1)
-    var vecka = moment(x.Datum, "MM-DD-YYYY").week()
-    moment(x.Datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
-    vecka = x.Datum.getFullYear() + ' - ' + vecka
+    var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    var vecka = moment(datum, "MM-DD-YYYY").week()
+    moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+    vecka = datum.getFullYear() + ' - ' + vecka
 
     var newPlayer = {'Spelare': req.body.playerNamn}
     db.collection("aktiva").insert(newPlayer, function (err, resDB) {
