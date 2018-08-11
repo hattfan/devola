@@ -43,6 +43,7 @@ section {
 	flex-direction: column;
 	align-items: center;
 	padding: 100px 80px;
+	border-bottom: 1px solid #ccc;
 }
 
 section:not(.hero):nth-child(odd) {
@@ -79,13 +80,6 @@ section h4.title {
 	text-align: center;
 }
 
-section p {
-	max-width: 775px;
-	line-height: 1.5;
-	padding: 0 20px;
-	margin-bottom: 30px;
-	/* text-align: center; */
-}
 
 @media (max-width: 800px) {
 	section {
@@ -153,7 +147,6 @@ header h2 {
 .hero img {
 	margin: 0 auto;
 	width: 50%;
-	border: 5px dashed darksalmon;
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -470,12 +463,105 @@ div.item .imageoverlay {
 }
 
 
-.cv-container {
-	/* display: flex; */
-	/* flex-direction: column;
-	flex-flow: wrap; */
-	width: 750px;
 
+.attached{
+	border-top: #999 1px solid;
+	border-left:  #999 1px solid;
+	border-right:  #999 1px solid;
+	border-bottom:  white 1px solid;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	font-size: 28px;
+	padding: 5px;
+	margin: 0;
+	background-color: white;
+	box-sizing: border-box;
+	z-index: 99;
+	width: 500px;
+	text-align: center
+} 
+
+/* TEST */
+
+main {
+	background-color: white;
+	border-spacing: border-box;
+	border: 1px solid #999;
+	border-radius: 5px;
+	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+	width: 60%;
+	margin-bottom: 30px;
+}
+
+
+
+main h4 {
+	text-align: center;
+	font-size: 20px;
+}
+.flex-grid{
+	display: flex;
+	padding: 5px;
+	
+}
+
+hr.divider {
+	width: 100%;
+	height: 1px;
+	background-color: #ccc;
+	border: 0;
+	margin: 10px 0;
+
+}
+.work-title {
+	background-color: rgb(233, 233, 233);
+	padding: 10px;
+	border-bottom: #aaa solid 1px;
+	border-top: 1px #ccc solid;
+}
+
+.cv-left-align {
+    flex-basis: 25%;
+    order: -1;
+	flex-grow: 1;
+
+}
+.work-title img {
+	max-width: 150px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	
+}
+
+.dates {
+	padding: 5px;
+	font-size: 12px;
+	background: #000000;
+	color: white;
+	border-radius: 3px;
+	text-align: center;
+	margin: 0 10%;
+}
+
+.place {
+	padding: 5px;
+	font-size: 12px;
+	background: #666;
+	color: white;
+	border-radius: 3px;
+	text-align: center;
+	margin: 0 20%;
+}
+
+.cv-main-align {
+    flex-basis: 75%;
+	flex-grow: 4;
+	text-align: justify;
+	padding: 0px 5px;
+}
+
+.cv-container {
 	background-color: white;
 	border-spacing: border-box;
 	padding: 10px;
@@ -483,54 +569,31 @@ div.item .imageoverlay {
 	border-radius: 5px;
 	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
-
 @media (max-width:850px) {
+	main {
+		width: 95%
+	}
+	main p {
+		font-size: 12px;
+		text-align: left;
+	}
+	main h3 {
+		font-size: 16px;
+	}
 	.cv-container {
 		width: 90%
 	}
-}
-
-/* .cv-hr {
-	width: 100%;
-	background: #999;
-	height: 1px;
-	margin: 5px 0;
-
-}
-/*  */
-
-.attached{
+	.attached{ 
+		width: 60%;
+		font-size: 18px;
+	}
+	.dates {
+		margin: 0 3%;
+		font-size: 10px;
+	}
 	
-	border-top: #999 1px solid;
-	border-left:  #999 1px solid;
-	border-right:  #999 1px solid;
-	border-bottom:  white 1px solid;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	font-size: 20px;
-	padding: 5px;
-	margin: 0;
-	background-color: white;
-	box-sizing: border-box;
-	z-index: 99;
-} 
-
-/* .cv-body{
-	margin-bottom: 10px;
-} */
-
-.flex-grid {
-	display: flex;
-}
-
-.col{
-	flex: 1;
-}
-
-.flex-grid-thirds {
-	display: flex;
-	justify-content: space-between;
-}
-.flex-grid-thirds .col {
-	width: 32%;
+	.place {
+		margin: 0 6%;
+		font-size: 10px;
+	}
 }
