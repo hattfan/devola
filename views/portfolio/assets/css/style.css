@@ -197,11 +197,33 @@ header h2 {
 }
 
 /*Knowledges section*/
+.packages .grid .courses {
+	height: 135px;
+	width: 235px;
+	padding: 30px;
+	text-align: center;
+}
 
-.packages .grid li {
+.packages .courses a {
+	width: 240px;
+	text-align: center;
+	opacity: 1;
+}
+
+.packages .courses .sidetext {
+	/* transform: rotateX(90deg); */
+	width: 30px;
+}
+
+.packages .tech li {
 	height: 130px;
 	width: 130px;
 	padding: 30px;
+	text-align: center;
+}
+
+.packages .grid a {
+	color: #555;
 	text-align: center;
 }
 
@@ -215,8 +237,8 @@ header h2 {
 
 /* Hover effects li:s */
 
-.packages li:hover {
-	border: solid #f5f5f5ec 1px;
+.packages .grid li:hover {
+	/* border: solid #f5f5f5ec 1px; */
 	border-radius: 10px;
 	color: #3f51b5;
 	-webkit-border-radius: 10px;
@@ -228,35 +250,6 @@ header h2 {
 .packages .grid li:hover>i {
 	font-size: 42px;
 	transition: ease-in-out 0.0s;
-}
-
-/*Contact Section*/
-
-.contact form {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-wrap: wrap;
-	width: 60%;
-}
-
-.contact form .btn {
-	padding: 18px 42px;
-}
-
-.contact form input {
-	padding: 15px;
-	margin-right: 30px;
-	font-size: 18px;
-	color: #555;
-	flex: 1;
-}
-
-@media (max-width: 1000px) {
-	.contact form input {
-		flex-basis: 100%;
-		margin: 0 0 20px 0;
-	}
 }
 
 /*Footer Section*/
@@ -309,6 +302,10 @@ div.itemcontainer {
 	text-align: justify;
 	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 	margin: 10px;
+}
+
+.itemcontainer h2 {
+	font-size: 20px;
 }
 
 div.item {
@@ -462,8 +459,6 @@ div.item .imageoverlay {
 	background-image: url('../../../portfolio/assets/img/bg/what-the-hex.png');
 }
 
-
-
 .attached{
 	border-top: #999 1px solid;
 	border-left:  #999 1px solid;
@@ -471,13 +466,13 @@ div.item .imageoverlay {
 	border-bottom:  white 1px solid;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	font-size: 28px;
+	font-size: 24px;
 	padding: 5px;
 	margin: 0;
 	background-color: white;
 	box-sizing: border-box;
 	z-index: 99;
-	width: 500px;
+	width: 40%;
 	text-align: center
 } 
 
@@ -492,8 +487,6 @@ main {
 	width: 60%;
 	margin-bottom: 30px;
 }
-
-
 
 main h4 {
 	text-align: center;
@@ -569,7 +562,16 @@ hr.divider {
 	border-radius: 5px;
 	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
+
+.br-on-mobile {
+    display: none;
+}
+
 @media (max-width:850px) {
+	.br-on-mobile {
+        display: static;
+	}
+	
 	main {
 		width: 95%
 	}
@@ -595,5 +597,11 @@ hr.divider {
 	.place {
 		margin: 0 6%;
 		font-size: 10px;
+	}
+	.itemcontainer h2 {
+		font-size: 20px;
+	}
+	.cv-main-align {
+		text-align: left;
 	}
 }
