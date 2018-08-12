@@ -33,6 +33,7 @@ a.btn {
 	background-color: #3f51b5;
 	opacity: 1;
 	display: inline;
+	margin: 0 3px
 }
 
 a.btn:hover {
@@ -89,6 +90,9 @@ section h4.title {
 }
 
 /*Header Styles*/
+.btns {
+	display: flex;
+}
 
 header {
 	margin-top: 50px;
