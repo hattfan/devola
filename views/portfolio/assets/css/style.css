@@ -202,7 +202,7 @@ header h2 {
 
 /*Knowledges section*/
 .packages .grid .courses {
-	height: 135px;
+	height: 140px;
 	width: 235px;
 	padding: 30px;
 	text-align: center;
@@ -212,6 +212,13 @@ header h2 {
 	width: 240px;
 	text-align: center;
 	opacity: 1;
+	margin: 5px;
+}
+
+.packages .courses a:hover {
+	border:1px #ccc solid;
+	background-color: #eee;
+	border-radius: 10%
 }
 
 .packages .courses .sidetext {
