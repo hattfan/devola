@@ -91,10 +91,6 @@ app.get("/foosball/removeGame/:id", (req, res) => {
 
 app.get("/foosball/leagueUpdate", (req, res) => {
     require(__dirname + "/views/foosball/js/mongo/statsVeckaUpdate.js")
-    require(__dirname + "/views/foosball/js/mongo/statsTotalUpdate.js")
-    require(__dirname + "/views/foosball/js/mongo/statsMånadUpdate.js")
-    res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
-
 })
 
 //!History route
