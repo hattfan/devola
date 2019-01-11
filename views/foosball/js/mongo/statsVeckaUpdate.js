@@ -4,7 +4,6 @@
 
 
 //TODO Ändrad...
-var rp = require('request-promise');
 var MongoClient = require("mongodb").MongoClient;
 var winCounter, loseCounter, madeGoalCounter, lostGoalCounter, procent, viktning;
 var url = "mongodb://ola:Neroxrox5(@ds121861.mlab.com:21861/foosball"
