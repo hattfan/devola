@@ -211,6 +211,15 @@ app.get('/foosball/removePlayer', function (req, res) {
     })
 });
 
+app.get('/foosball/nyaslumpen', function (req, res) {
+
+    db.collection("aktiva").find({}).sort({'Spelare':1}).toArray(function (err, data) {
+        if (err) throw err
+        // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+        res.render('foosball/nyaslumpen.ejs', {data:data});
+    })
+});
+
 //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 app.get('/foosball/slumpPlayers', function (req, res) {

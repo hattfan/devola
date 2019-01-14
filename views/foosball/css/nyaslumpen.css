@@ -1,0 +1,19 @@
+.player-container{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.play-choice {
+    padding: 10px;
+    text-align: center;
+    width: 75px;
+}
+
+.active-player {
+    color: lawngreen;
+}
+
+.must-play{
+    color: red;
+}
