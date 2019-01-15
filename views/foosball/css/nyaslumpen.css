@@ -2,18 +2,59 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.game-section{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .play-choice {
     padding: 10px;
     text-align: center;
-    width: 75px;
+    width: 100px;
 }
 
+@media(max-width:540px){
+    .play-choice {
+        width: 75px;
+    }
+}
 .active-player {
     color: lawngreen;
 }
 
 .must-play{
     color: red;
+}
+
+#foosball-image{
+    height: 400px;
+    border-radius: 0;
+    text-align: center;
+}
+
+@media(max-width:540px){
+    #foosball-image{
+        height: 150px;
+        border-radius: 0;
+    }
+}
+
+#slump-btn {
+    cursor: pointer;
+}
+
+.player-field{
+    width: 30%;
+    display: inline;
+    text-align: center;
+}
+
+.fosball-div{
+    width: 40%;
+    text-align: center;
 }
