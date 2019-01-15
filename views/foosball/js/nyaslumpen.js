@@ -23,36 +23,36 @@ function createGame(){
     console.log(matcher);
     document.querySelector(".contain").innerHTML = `
     <div class="game-section" id="first-game">
-<div class="player-field">
-    <div id="game1player1">${matcher.firstGame[0]}</div>
-    <div>&</div>
-    <div id="game1player2">${matcher.firstGame[1]}</div>
-</div>
-<div class="fosball-div">
-    <img id="foosball-image" src="img/foosball_field.png">
-</div>
-<div class="player-field">
-    <div id="game2player1">${matcher.firstGame[2]}</div>
-    <div>&</div>
-    <div id="game2player2">${matcher.firstGame[3]}</div>
-</div>
-</div>
-<hr>
-<div class="game-section" id="second-game">
-<div class="player-field">
-<div id="game1player1">${matcher.secondGame[0]}</div>
-<div>&</div>
-<div id="game1player2">${matcher.secondGame[1]}</div>
-</div>
-<div class="fosball-div">
-<img id="foosball-image" src="img/foosball_field.png">
-</div>
-<div class="player-field">
-<div id="game2player1">${matcher.secondGame[2]}</div>
-<div>&</div>
-<div id="game2player2">${matcher.secondGame[3]}</div>
-</div>
-</div>
+    <div class="player-field">
+        <div id="game1player1">${matcher.firstGame[0]}</div>
+        <div>&</div>
+        <div id="game1player2">${matcher.firstGame[1]}</div>
+    </div>
+    <div class="fosball-div">
+        <img id="foosball-image" src="img/foosball_field.png">
+    </div>
+    <div class="player-field">
+        <div id="game2player1">${matcher.firstGame[2]}</div>
+        <div>&</div>
+        <div id="game2player2">${matcher.firstGame[3]}</div>
+    </div>
+    </div>
+    <hr>
+    <div class="game-section" id="second-game">
+        <div class="player-field">
+            <div id="game1player1">${matcher.secondGame[0]}</div>
+            <div>&</div>
+            <div id="game1player2">${matcher.secondGame[1]}</div>
+        </div>
+        <div class="fosball-div">
+            <img id="foosball-image" src="img/foosball_field.png">
+        </div>
+        <div class="player-field">
+            <div id="game2player1">${matcher.secondGame[2]}</div>
+            <div>&</div>
+            <div id="game2player2">${matcher.secondGame[3]}</div>
+        </div>
+    </div>
     `
 }
 
@@ -98,6 +98,7 @@ function getPlayers(){
         mustPlay.push(player.parentNode.parentNode.children[1].innerText)
     })
     var allPlayers = activePlayers.concat(mustPlay);
+    console.log(allPlayers)
     var matcher = makeSlump(shuffle(mustPlay), shuffle(activePlayers), shuffle(allPlayers));
     return matcher;
 }
@@ -114,20 +115,22 @@ function makeSlump(mustPlay, activePlayers, allPlayers){
             activePlayerCounter += 1;
         }
     }
+    //mustplayCounter = 1
+    //activePlayerCounter = 3
     firstGame = shuffle(firstGame);
     //Loop to randomize second game
-    for (let i = 4; i < 9; i++) {
-        if (mustPlay[i] !== undefined) {
+    for (let i = 4; i < 8; i++) {
+        if (mustPlay[i-mustPlayCounter] !== undefined) {
             secondGame[i-4] = mustPlay[mustPlayCounter]
             mustPlayCounter += 1;
-        } else if (activePlayers[i-mustPlayCounter] !== undefined){
+        } else if (activePlayers[i-activePlayerCounter] !== undefined){
             secondGame[i-4] = activePlayers[activePlayerCounter];
             activePlayerCounter += 1;
         } else {
-            if(secondGame.includes(activePlayers[searchCounter])){
+            if(secondGame.includes(allPlayers[searchCounter])){
                 searchCounter +=1;
             } else {
-                secondGame[i-4] = activePlayers[searchCounter];
+                secondGame[i-4] = allPlayers[searchCounter];
                 searchCounter +=1;
             }
         }
