@@ -24,7 +24,7 @@ function createGame() {
         `
     <div class="game-section" id="first-game">
     <div class="player-field">
-        <div id="game1player1">${matcher.firstGame[0]}</div>
+        <d                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  iv id="game1player1">${matcher.firstGame[0]}</div>
         <div>&</div>
         <div id="game1player2">${matcher.firstGame[1]}</div>
     </div>
