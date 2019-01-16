@@ -356,12 +356,8 @@ app.post("/foosball/resultat", function (req, res) {
         var spelareloggade = [], insertDB = {};
         db.collection('playerWeek').find({ 'vecka': vecka }).toArray(function (err, res) {
             if (err) throw err
-            console.log(res)
             var pushArr = [];
             for (const key in spelare) {
-                console.log('KEY')
-                console.log(key)
-
                 if (spelare.hasOwnProperty(key)) {
                     const spelarenr = spelare[key];
                     res.forEach(spelarStat => {
@@ -411,12 +407,10 @@ app.post("/foosball/resultat", function (req, res) {
                         if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
                             spelareloggade.push(spelarenr)
                             var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                            // console.log(query)
                             pushArr.push(query)
                             db.collection('playerMonth').update({ '_id': spelarStat['_id'] }, { $set: { 'Vinster':query.Vinster, 'Förluster':query['Förluster'],
                                                                 'GjordaMål':query['GjordaMål'],'InsläpptaMål':query['InsläpptaMål'],'Viktning':query['Viktning']} }, function (err, res) {
                                 if (err) throw err
-                                // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
                             })
                         }
                     })
@@ -428,7 +422,6 @@ app.post("/foosball/resultat", function (req, res) {
                     "Viktning": (Math.round((Math.pow((Lag1Matchvinst/(Lag1Matchvinst+Lag2Matchvinst)),3) * Lag1Matchvinst)*100)/100 + (Lag1-Lag2)*0.001)}
                     db.collection('playerMonth').insert(insertDB, function (err, res) {
                         if (err) throw err
-                        console.log('Insertade ' + spelareArr[i])
                     })
                 } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
                     insertDB = {'Månad':månad,"Spelare": spelareArr[i],"Vinster": Lag2Matchvinst,"Förluster": Lag1Matchvinst,"GjordaMål": Lag2,"InsläpptaMål": Lag1,
@@ -516,11 +509,6 @@ app.post("/foosball/resultat", function (req, res) {
         res.redirect("/foosball/reglanding");
     })
 })
-
-// var portSettings = process.env.PORT
-// var portSettings = 3030;
-
-//COME ON!
 
 var port = process.env.PORT || 3030; 
 

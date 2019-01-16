@@ -18,41 +18,41 @@ document.querySelectorAll(".play-choice").forEach(player => {
 
 document.querySelector("#slump-btn").addEventListener("click", createGame)
 
-function createGame(){
+function createGame() {
     var matcher = getPlayers();
-    console.log(matcher);
-    document.querySelector(".contain").innerHTML = `
+    document.querySelector(".contain").innerHTML =
+        `
     <div class="game-section" id="first-game">
-<div class="player-field">
-    <div id="game1player1">${matcher.firstGame[0]}</div>
-    <div>&</div>
-    <div id="game1player2">${matcher.firstGame[1]}</div>
-</div>
-<div class="fosball-div">
-    <img id="foosball-image" src="img/foosball_field.png">
-</div>
-<div class="player-field">
-    <div id="game2player1">${matcher.firstGame[2]}</div>
-    <div>&</div>
-    <div id="game2player2">${matcher.firstGame[3]}</div>
-</div>
-</div>
-<hr>
-<div class="game-section" id="second-game">
-<div class="player-field">
-<div id="game1player1">${matcher.secondGame[0]}</div>
-<div>&</div>
-<div id="game1player2">${matcher.secondGame[1]}</div>
-</div>
-<div class="fosball-div">
-<img id="foosball-image" src="img/foosball_field.png">
-</div>
-<div class="player-field">
-<div id="game2player1">${matcher.secondGame[2]}</div>
-<div>&</div>
-<div id="game2player2">${matcher.secondGame[3]}</div>
-</div>
-</div>
+    <div class="player-field">
+        <div id="game1player1">${matcher.firstGame[0]}</div>
+        <div>&</div>
+        <div id="game1player2">${matcher.firstGame[1]}</div>
+    </div>
+    <div class="fosball-div">
+        <img id="foosball-image" src="img/foosball_field.png">
+    </div>
+    <div class="player-field">
+        <div id="game2player1">${matcher.firstGame[2]}</div>
+        <div>&</div>
+        <div id="game2player2">${matcher.firstGame[3]}</div>
+    </div>
+    </div>
+    <hr>
+    <div class="game-section" id="second-game">
+        <div class="player-field">
+            <div id="game1player1">${matcher.secondGame[0]}</div>
+            <div>&</div>
+            <div id="game1player2">${matcher.secondGame[1]}</div>
+        </div>
+        <div class="fosball-div">
+            <img id="foosball-image" src="img/foosball_field.png">
+        </div>
+        <div class="player-field">
+            <div id="game2player1">${matcher.secondGame[2]}</div>
+            <div>&</div>
+            <div id="game2player2">${matcher.secondGame[3]}</div>
+        </div>
+    </div>
     `
 }
 
@@ -88,7 +88,7 @@ function createGame(){
 </div>
 </div> */
 
-function getPlayers(){
+function getPlayers() {
     var activePlayers = [];
     document.querySelectorAll(".active-player").forEach(player => {
         activePlayers.push(player.parentNode.parentNode.children[1].innerText)
@@ -98,11 +98,12 @@ function getPlayers(){
         mustPlay.push(player.parentNode.parentNode.children[1].innerText)
     })
     var allPlayers = activePlayers.concat(mustPlay);
+    console.log(allPlayers, shuffle(allPlayers))
     var matcher = makeSlump(shuffle(mustPlay), shuffle(activePlayers), shuffle(allPlayers));
     return matcher;
 }
 
-function makeSlump(mustPlay, activePlayers, allPlayers){
+function makeSlump(mustPlay, activePlayers, allPlayers) {
     var firstGame = [], secondGame = [], mustPlayCounter = 0, activePlayerCounter = 0, searchCounter = 0;
     //Loop to randomize first game
     for (let i = 0; i < 4; i++) {
@@ -114,29 +115,48 @@ function makeSlump(mustPlay, activePlayers, allPlayers){
             activePlayerCounter += 1;
         }
     }
-    firstGame = shuffle(firstGame);
+    console.log(firstGame);
+    firstGameFinal = shuffle(firstGame);
     //Loop to randomize second game
-    for (let i = 4; i < 9; i++) {
-        if (mustPlay[i] !== undefined) {
-            secondGame[i-4] = mustPlay[mustPlayCounter]
-            mustPlayCounter += 1;
-        } else if (activePlayers[i-mustPlayCounter] !== undefined){
-            secondGame[i-4] = activePlayers[activePlayerCounter];
-            activePlayerCounter += 1;
-        } else {
-            if(secondGame.includes(activePlayers[searchCounter])){
-                searchCounter +=1;
+    if(allPlayers.length > 4){
+        for (let i = 4; i < 8; i++) {
+            if (mustPlay[i] !== undefined) {
+                console.log('mustplay');
+                secondGame[i - 4] = mustPlay[mustPlayCounter]
+                mustPlayCounter += 1;
+            } else if (activePlayers[i - mustPlayCounter] !== undefined) {
+                console.log('activeplayer');
+                secondGame[i - 4] = activePlayers[activePlayerCounter];
+                activePlayerCounter += 1;
             } else {
-                secondGame[i-4] = activePlayers[searchCounter];
-                searchCounter +=1;
+                console.log('allplayers');
+                for (let j = 0; j < allPlayers.length; j++) {
+                    if (secondGame[i - 4] === undefined) {
+                        console.log('EJ DEF');
+                        if (!secondGame.includes(allPlayers[j])) {
+                            secondGame[i - 4] = allPlayers[j];
+                        }
+                    }
+                }
             }
         }
+        secondGameFinal = shuffle(secondGame);
+    } else {
+        secondGameFinal = shuffle(firstGame);
     }
-    secondGame = shuffle(secondGame);
     var matcher = {};
-    matcher['firstGame'] = firstGame;
-    matcher['secondGame'] = secondGame;
+    matcher['firstGame'] = firstGameFinal;
+    matcher['secondGame'] = secondGameFinal;
     return matcher;
+}
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
 }
 
 function shuffle(array) {
