@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Starcraftslumpen</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="rubrik">
+      <h1><i class="fa fa-hand-spock-o" aria-hidden="true"></i> Lagslumparen</h1>
+    </div>
+
+    <div class="option-container">
+      <div class="options">
+        <div class="spelar-title">
+          <label>Spelare 1</label>
+          <select class="form-control last-game-choice">
+            <option value="">Hatten</option>
+            <option value="">Larz</option>
+            <option value="">Korben</option>
+          </select>
+        </div>
+        <div class="prev-game">
+          <label>Föregående game</label>
+          <select class="form-control">
+            <option value="" selected></option>
+            <option value="Zerg">Zerg</option>
+            <option value="Protoss">Protoss</option>
+            <option value="Terran">Terran</option>
+
+          </select>
+        </div>
+        <div class="next-game">
+          <label>Nästa game</label>
+          <input class="form-control next-game-choice" disabled>
+        </div>
+      </div>
+      <div class="options">
+        <div class="spelar-title">
+          <label>Spelare 2</label>
+          <select class="form-control last-game-choice">
+            <option value="">Korben</option>
+            <option value="">Hatten</option>
+            <option value="">Larz</option>
+          </select>
+        </div>
+        <div class="prev-game">
+          <label>Föregående game</label>
+          <select class="form-control">
+            <option value="" selected></option>
+            <option value="Zerg">Zerg</option>
+            <option value="Protoss">Protoss</option>
+            <option value="Terran">Terran</option>
+          </select>
+        </div>
+        <div class="next-game">
+          <label>Nästa game</label>
+          <input class="form-control next-game-choice" disabled>
+        </div>
+      </div>
+
+      <div class="options">
+        <div class="spelar-title">
+          <label>Spelare 3</label>
+          <select class="form-control last-game-choice">
+            <option value="">Larz</option>
+            <option value="">Hatten</option>
+            <option value="">Korben</option>
+          </select>
+        </div>
+        <div class="prev-game">
+          <label>Föregående game</label>
+          <select class="form-control">
+              <option value="" selected></option>
+              <option value="Zerg">Zerg</option>
+              <option value="Protoss">Protoss</option>
+              <option value="Terran">Terran</option>
+            </select>
+        </div>
+        <div class="next-game">
+          <label>Nästa game</label>
+          <input class="form-control next-game-choice" disabled>
+        </div>
+      </div>
+    </div>
+    <button id="play-game" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i>
+      Välj matchen</button>
+    <button id="random-button" class="btn btn-success"><i class="fa fa-random" aria-hidden="true"></i>
+      Slumpa nästa match</button>
+
+  </div>
+</body>
+
+<script src="js/assets/jquery-3.3.1.min.js"></script>
+<script src="js/js/bootstrap.min.js"></script>
+<script src="js/script.js"></script>
+
+</html>

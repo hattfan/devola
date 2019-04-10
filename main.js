@@ -638,3 +638,12 @@ app.get('/', function (req, res) {
 app.get('/worldoffoosball/',function(req,res){
 	res.render('worldoffoosball/index.ejs');
 });
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! Starcraft-slumpen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+app.get('/starcraftslumpen/',function(req,res){
+	res.render('starcraftslumpen/index.ejs');
+});
