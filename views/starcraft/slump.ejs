@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Starcraftslumpen</title>
-  <link rel="stylesheet" href="css/bootstrap.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.css">
-</head>
+<% include ./partials/header.ejs %>
 
 <body>
   <div class="container">
@@ -78,11 +67,11 @@
         <div class="prev-game">
           <label>Föregående game</label>
           <select class="form-control">
-              <option value="" selected></option>
-              <option value="Zerg">Zerg</option>
-              <option value="Protoss">Protoss</option>
-              <option value="Terran">Terran</option>
-            </select>
+            <option value="" selected></option>
+            <option value="Zerg">Zerg</option>
+            <option value="Protoss">Protoss</option>
+            <option value="Terran">Terran</option>
+          </select>
         </div>
         <div class="next-game">
           <label>Nästa game</label>
@@ -96,10 +85,7 @@
       Slumpa nästa match</button>
 
   </div>
-</body>
 
-<script src="js/assets/jquery-3.3.1.min.js"></script>
-<script src="js/js/bootstrap.min.js"></script>
 <script src="js/script.js"></script>
 
-</html>
+  <%include ./partials/footer.ejs %>

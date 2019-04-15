@@ -1,0 +1,108 @@
+<% include ./partials/header.ejs %>
+<!-- Register Page -->
+<div class="container">
+    <div class="register">
+        <form class="post-form" action="/starcraft/register" method="POST">
+            <h1>Lag 1</h1>
+            <div class="player-container">
+                <div class="form-group selection-container">
+                    <label for="exampleFormControlSelect11">Spelare 1</label>
+                    <select class="form-control" name="player1Team1" required>
+                        <option value="Larz" selected>Larz</option>
+                        <option value="Korben">Korben</option>
+                        <option value="Danne">Danne</option>
+                        <option value="Hatten">Hatten</option>
+                    </select>
+                </div>
+                <div class="form-group selection-container">
+                    <label for="player1Team1race">Ras</label>
+                    <select class="form-control" name="player1Team1race" required>
+                        <option disabled selected value> Välj ras </option>
+                        <option value="Zerg">Zerg</option>
+                        <option value="Protoss">Protoss</option>
+                        <option value="Terran">Terran</option>
+                    </select>
+                </div>
+            </div>
+            <div class="player-container">
+                <div class="form-group selection-container">
+                    <label for="exampleFormControlSelect12">Spelare 2</label>
+                    <select class="form-control" name="player2Team1" required>
+                        <option value="Larz">Larz</option>
+                        <option value="Korben" selected>Korben</option>
+                        <option value="Danne">Danne</option>
+                        <option value="Hatten">Hatten</option>
+                    </select>
+                </div>
+                <div class="form-group selection-container">
+                    <label for="player2Team1race">Ras</label>
+                    <select class="form-control" name="player2Team1race" required>
+                        <option disabled selected value> Välj ras </option>
+                        <option value="Zerg">Zerg</option>
+                        <option value="Protoss">Protoss</option>
+                        <option value="Terran">Terran</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="radio">
+                <label><input type="radio" name="optradio" value="team1Win" required> Vinst</label>
+            </div>
+            <hr>
+            <h1>Lag 2</h1>
+            <div class="player-container">
+                <div class="form-group selection-container">
+                    <label for="exampleFormControlSelect21">Spelare 1</label>
+                    <select class="form-control" name="player1Team2" required>
+                        <option value="Larz">Larz</option>
+                        <option value="Korben">Korben</option>
+                        <option value="Danne" selected>Danne</option>
+                        <option value="Hatten">Hatten</option>
+                    </select>
+                </div>
+                <div class="form-group selection-container">
+                    <label for="player1Team2race">Ras</label>
+                    <select class="form-control" name="player1Team2race" required>
+                        <option disabled selected value> Välj ras </option>
+                        <option value="Zerg">Zerg</option>
+                        <option value="Protoss">Protoss</option>
+                        <option value="Terran">Terran</option>
+                    </select>
+                </div>
+            </div>
+            <div class="player-container">
+                <div class="form-group selection-container">
+                    <label for="exampleFormControlSelect22">Spelare 2</label>
+                    <select class="form-control" name="player2Team2" required>
+                        <option value="Larz">Larz</option>
+                        <option value="Korben">Korben</option>
+                        <option value="Danne">Danne</option>
+                        <option value="Hatten" selected>Hatten</option>
+                    </select>
+                </div>
+                <div class="form-group selection-container">
+                    <label for="player2Team2race">Ras</label>
+                    <select class="form-control" name="player2Team2race" required>
+                        <option disabled selected value> Välj ras </option>
+                        <option value="Zerg">Zerg</option>
+                        <option value="Protoss">Protoss</option>
+                        <option value="Terran">Terran</option>
+                    </select>
+                </div>
+            </div>
+            <div class="radio">
+                <label><input type="radio" name="optradio" value="team2Win" required> Vinst</label>
+            </div>
+            <br>
+            <div class="form-group">
+                <button class="btn btn-success btn-lg btn-block">Lägg in Resultat</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script src="js/assets/jquery-3.3.1.min.js"></script>
+<script src="js/js/bootstrap.min.js"></script>
+
+</html>
