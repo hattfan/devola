@@ -1,9 +1,9 @@
 <%include ./partials/header.ejs %>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<div class="top-charts">
-  <div class="player-text-container">
-    <h2 class="player-text">Lagstats</h2>
+<div class="top-charts" style="display: none">
+  <div class="team-text-container">
+    <h2 class="team-text">Lagstats</h2>
   </div>
   <!-- style="display: none" -->
   <div class="chart-container">
@@ -18,15 +18,7 @@
   </div>
 
 </div>
-<div class="pie-charts-container">
-  <div class="pie-charts-player-container">
-    <div class="player-text-container">
-      <h2 class="player-text">Larz</h2>
-    </div>
-    <div class="pie-chart-container"><canvas id="Larz-Zerg"></canvas></div>
-    <div class="pie-chart-container"><canvas id="Larz-Protoss"></canvas></div>
-    <div class="pie-chart-container"><canvas id="Larz-Terran"></canvas></div>
-  </div>
+<div class="pie-charts-container" style="display: none">
   <div class="pie-charts-player-container">
     <div class="player-text-container">
       <h2 class="player-text">Hatten</h2>
@@ -37,6 +29,15 @@
   </div>
   <div class="pie-charts-player-container">
     <div class="player-text-container">
+      <h2 class="player-text">Larzon</h2>
+    </div>
+    <div class="pie-chart-container"><canvas id="Larz-Zerg"></canvas></div>
+    <div class="pie-chart-container"><canvas id="Larz-Protoss"></canvas></div>
+    <div class="pie-chart-container"><canvas id="Larz-Terran"></canvas></div>
+  </div>
+
+  <div class="pie-charts-player-container">
+    <div class="player-text-container">
       <h2 class="player-text">Korben</h2>
     </div>
     <div class="pie-chart-container"><canvas id="Korben-Zerg"></canvas></div>
@@ -44,7 +45,7 @@
     <div class="pie-chart-container"><canvas id="Korben-Terran"></canvas></div>
   </div>
   <div class="pie-charts-player-container">
-    <div class="player-text-container">
+    <div class="player-text-container" style="justify-content:start">
       <h2 class="player-text">Danne</h2>
     </div>
     <div class="pie-chart-container"><canvas id="Danne-Terran"></canvas></div>

@@ -15,6 +15,8 @@ fetch('../starcraft/data')
         var resultat = calculateWins(data);
         document.querySelector(".spinner-container").style.display = "none";
         document.querySelector(".chart-container").style.display = "";
+        document.querySelector(".top-charts").style.display = "";
+        document.querySelector(".pie-charts-container").style.display = "";
         document.querySelectorAll(".chart-label").forEach(label => label.style.display = "")
 
         var ctx = document.getElementById('myChart').getContext('2d');
@@ -47,13 +49,14 @@ fetch('../starcraft/data')
             }
           }
         });
+        var formData = calculateFormLast10Games(data);
+        debugger;
         new Chart(document.getElementById("line-chart"), {
           type: 'line',
           data: {
             labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             datasets: [{
-              data: [1, 0, -1, -2, -1, 0, 1, 2, 3, 2, 1
-              ],
+              data: formData,
               label: "Form",
               borderColor: "#3e95cd",
               fill: false
@@ -142,4 +145,19 @@ function calculateWins(inputData) {
   }
 
   return vinster;
+}
+
+function calculateFormLast10Games(inputData){
+  var formResult = [0];
+  for (let i = 1; i < inputData.length; i++) {
+    if(inputData[i].Lag1Spelare1 === "Larz" && inputData[i].Lag1Spelare2 === "Korben" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] + 1;
+    else if(inputData[i].Lag1Spelare1 === "Korben" && inputData[i].Lag1Spelare2 === "Larz" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] + 1;
+    else if(inputData[i].Lag2Spelare1 === "Larz" && inputData[i].Lag2Spelare2 === "Korben" && inputData[i].VinstLag2 === 1) formResult[i] = formResult[i-1] + 1;
+    else if(inputData[i].Lag2Spelare1 === "Korben" && inputData[i].Lag2Spelare2 === "Larz" && inputData[i].VinstLag2 === 1) formResult[i] = formResult[i-1] + 1;
+    else if(inputData[i].Lag1Spelare1 === "Hatten" && inputData[i].Lag1Spelare2 === "Danne" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] - 1;
+    else if(inputData[i].Lag1Spelare1 === "Danne" && inputData[i].Lag1Spelare2 === "Hatten" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] - 1;
+    else if(inputData[i].Lag2Spelare1 === "Hatten" && inputData[i].Lag2Spelare2 === "Danne" && inputData[i].VinstLag2 === 1) formResult[i] = formResult[i-1] - 1;
+    else if(inputData[i].Lag2Spelare1 === "Danne" && inputData[i].Lag2Spelare2 === "Hatten" && inputData[i].VinstLag2 === 1) formResult[i] = formResult[i-1] - 1;
+  }
+  return formResult;
 }
