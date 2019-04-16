@@ -1,4 +1,4 @@
-fetch('../foosball/data/month')
+fetch('../foosball/data/month',{credentials: 'same-origin'})
     .then(
         function (response) {
             if (response.status !== 200) {

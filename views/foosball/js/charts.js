@@ -1,4 +1,4 @@
-fetch('../foosball/data')
+fetch('../foosball/data',{credentials: 'same-origin'})
     .then(
         function (response) {
             if (response.status !== 200) {

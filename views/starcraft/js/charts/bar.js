@@ -1,6 +1,6 @@
 var races = ["Zerg", "Protoss", "Terran"];
 
-fetch('../starcraft/data')
+fetch('../starcraft/data',{credentials: 'same-origin'})
   .then(
     function (response) {
       if (response.status !== 200) {
