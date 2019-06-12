@@ -131,13 +131,12 @@ MongoClient.connect(url, (err, client) => {
         var newPlayer = { 'Spelare': req.body.playerNamn }
         db.collection("aktiva").insert(newPlayer, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
         db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i totalligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+
         })
 
         var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
@@ -224,32 +223,70 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/statLanding', function (req, res) {
         res.render('foosball/statLanding.ejs');
     });
-
+    
     app.get('/foosball/statsWeek', function (req, res) {
+        if (err) throw err
         var datum = new Date();
-        // datum.setDate(datum.getDate() + 5);
-
         var vecka = moment(datum, "MM-DD-YYYY").week()
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
-        vecka = datum.getFullYear() + ' - ' + vecka
+        vecka = datum.getFullYear() + ' - ' + vecka;
+        db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+            
+        // console.log(result);
+        var allPlayers = [];
+          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+          options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+            arrayEv.forEach(player => {
+              allPlayers.includes(player)?null:allPlayers.push(player);
+            })
+          })
+          
+        var playerStatistics = calculatePlayer(result, allPlayers);
 
-        db.collection("playerWeek").find({ 'vecka': vecka }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            // console.log(data)
-            res.render("foosball/statWeek.ejs", { dataname: data, vecka: vecka })
+        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
+                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
+                     : 0;                   // a and b are equal
+            });
+        
+        res.render('foosball/statWeek.ejs', {dataname:sorted, vecka: vecka})
+            
         })
+        
     })
+
 
     app.get('/foosball/statsMonth', function (req, res) {
         var datum = new Date();
 
         var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-        // var vecka = "2018 - 15"
-        db.collection("playerMonth").find({ 'Månad': månad }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            // console.log(data)
-            res.render("foosball/statMonth.ejs", { dataname: data, månad: månad })
+
+        moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+        db.collection('stat').find({'Månad':månad}).toArray(function(err,result){
+            
+        // console.log(result);
+        var allPlayers = [];
+          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+          options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+            arrayEv.forEach(player => {
+              allPlayers.includes(player)?null:allPlayers.push(player);
+            })
+          })
+          
+        var playerStatistics = calculatePlayer(result, allPlayers);
+
+        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
+                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
+                     : 0;                   // a and b are equal
+            });
+        
+        res.render('foosball/statMonth.ejs', {dataname:sorted, månad: månad})
+            
         })
+
     })
 
     app.get('/foosball/statsVroom', function (req, res) {
@@ -266,7 +303,31 @@ MongoClient.connect(url, (err, client) => {
             res.render("foosball/statTotal.ejs", { dataname: data })
         })
     })
-
+    
+        app.get('/foosball/statsTotal2', function (req, res) {
+        db.collection("stat").find({}).toArray(function (err, result) {
+                    console.log(result.length);
+        var allPlayers = [];
+          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+          options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+            arrayEv.forEach(player => {
+              allPlayers.includes(player)?null:allPlayers.push(player);
+            })
+          })
+          
+        var playerStatistics = calculatePlayer(result, allPlayers);
+        
+        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
+                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
+                     : 0;                   // a and b are equal
+            });
+            
+            res.render("foosball/statTotal.ejs", { dataname: sorted })
+        })
+    })
+  
     app.get('/foosball/allGames', function (req, res) {
 
         db.collection("stat").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
@@ -277,7 +338,7 @@ MongoClient.connect(url, (err, client) => {
     })
 
 
-    // CREATE - add new campground to DB
+        // CREATE - add new campground to DB
     app.post("/foosball/resultat", function (req, res) {
         var Lag1Matchvinst, Lag2Matchvinst;
         var Lag1 = Number(req.body.goalTeam1)
@@ -327,106 +388,6 @@ MongoClient.connect(url, (err, client) => {
             if (err) throw err
             console.log('Inlagd match ' + resDB.insertedCount)
 
-
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!! VECKO-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            var spelareloggade = [], insertDB = {};
-            db.collection('playerWeek').find({ 'vecka': vecka }).toArray(function (err, res) {
-                if (err) throw err
-                var pushArr = [];
-                for (const key in spelare) {
-                    if (spelare.hasOwnProperty(key)) {
-                        const spelarenr = spelare[key];
-                        res.forEach(spelarStat => {
-                            if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                                spelareloggade.push(spelarenr)
-                                var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                // console.log(query)
-                                pushArr.push(query)
-                                db.collection('playerWeek').update({ '_id': spelarStat['_id'] }, {
-                                    $set: {
-                                        'Vinster': query.Vinster, 'Förluster': query['Förluster'],
-                                        'GjordaMål': query['GjordaMål'], 'InsläpptaMål': query['InsläpptaMål'], 'Viktning': query['Viktning']
-                                    }
-                                }, function (err, res) {
-                                    if (err) throw err
-                                    // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
-                                })
-                            }
-                        })
-                    };
-                }
-                for (let i = 0; i < spelareArr.length; i++) {
-                    if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                        insertDB = {
-                            "vecka": vecka, "Spelare": spelareArr[i], "Vinster": Lag1Matchvinst, "Förluster": Lag2Matchvinst, "GjordaMål": Lag1, "InsläpptaMål": Lag2,
-                            "Viktning": (Math.round((Math.pow((Lag1Matchvinst / (Lag1Matchvinst + Lag2Matchvinst)), 3) * Lag1Matchvinst) * 100) / 100 + (Lag1 - Lag2) * 0.001)
-                        }
-                        db.collection('playerWeek').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            // console.log('Insertade ' + spelareArr[i])
-                        })
-                    } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                        insertDB = {
-                            "vecka": vecka, "Spelare": spelareArr[i], "Vinster": Lag2Matchvinst, "Förluster": Lag1Matchvinst, "GjordaMål": Lag2, "InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst / (Lag2Matchvinst + Lag1Matchvinst)), 3) * Lag2Matchvinst) * 100) / 100 + (Lag2 - Lag1) * 0.001)
-                        }
-                        db.collection('playerWeek').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            // console.log('Insertade ' + spelareArr[i])
-                        })
-                    }
-                }
-            })
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!! MÅNADS-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            var spelareloggade = [], insertDB = {};
-            db.collection('playerMonth').find({ 'Månad': månad }).toArray(function (err, res) {
-                if (err) throw err
-                var pushArr = [];
-                for (const key in spelare) {
-                    if (spelare.hasOwnProperty(key)) {
-                        const spelarenr = spelare[key];
-                        res.forEach(spelarStat => {
-                            if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                                spelareloggade.push(spelarenr)
-                                var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                pushArr.push(query)
-                                db.collection('playerMonth').update({ '_id': spelarStat['_id'] }, {
-                                    $set: {
-                                        'Vinster': query.Vinster, 'Förluster': query['Förluster'],
-                                        'GjordaMål': query['GjordaMål'], 'InsläpptaMål': query['InsläpptaMål'], 'Viktning': query['Viktning']
-                                    }
-                                }, function (err, res) {
-                                    if (err) throw err
-                                })
-                            }
-                        })
-                    };
-                }
-                for (let i = 0; i < spelareArr.length; i++) {
-                    if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                        insertDB = {
-                            'Månad': månad, "Spelare": spelareArr[i], "Vinster": Lag1Matchvinst, "Förluster": Lag2Matchvinst, "GjordaMål": Lag1, "InsläpptaMål": Lag2,
-                            "Viktning": (Math.round((Math.pow((Lag1Matchvinst / (Lag1Matchvinst + Lag2Matchvinst)), 3) * Lag1Matchvinst) * 100) / 100 + (Lag1 - Lag2) * 0.001)
-                        }
-                        db.collection('playerMonth').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                        })
-                    } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                        insertDB = {
-                            'Månad': månad, "Spelare": spelareArr[i], "Vinster": Lag2Matchvinst, "Förluster": Lag1Matchvinst, "GjordaMål": Lag2, "InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst / (Lag2Matchvinst + Lag1Matchvinst)), 3) * Lag2Matchvinst) * 100) / 100 + (Lag2 - Lag1) * 0.001)
-                        }
-                        db.collection('playerMonth').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
-                        })
-                    }
-                }
-            })
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!! TOTAL-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -438,6 +399,7 @@ MongoClient.connect(url, (err, client) => {
                     if (spelare.hasOwnProperty(key)) {
                         const spelarenr = spelare[key];
                         res.forEach(spelarStat => {
+                            console.log(Object.values(spelarStat));
                             if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
                                 spelareloggade.push(spelarenr)
                                 var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
@@ -506,8 +468,6 @@ MongoClient.connect(url, (err, client) => {
                     };
                 }
             })
-
-
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!! KLART !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -721,3 +681,55 @@ app.get('/worldoffoosball/', function (req, res) {
 });
 
 
+
+
+  
+function calculatePlayer(matches, allPlayers){
+    
+    var allPlayersStats = [];
+    
+    allPlayers.forEach(player => {
+        var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
+        matches.forEach(match => {
+          if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
+                if (match['Lag1Matchvinst'] > match['Lag2Matchvinst']) {
+                    vinster = vinster + 1;
+                    gjordaMål = gjordaMål + Number(match['Lag1']);
+                    insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                } else if (match['Lag1Matchvinst'] < match['Lag2Matchvinst']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag1']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                }
+            }
+            else if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
+                if (match['Lag1Matchvinst'] < match['Lag2Matchvinst']) {
+                      vinster = vinster + 1;
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                } else if (match['Lag1Matchvinst'] > match['Lag2Matchvinst']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                }
+            }
+    
+            viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
+            procent = Math.round(vinster / (vinster + losses) * 100) / 100
+
+          
+        })
+        var query = {
+              'Spelare' : player,
+              'Vinster': vinster,
+              'Förluster': losses,
+              'GjordaMål': gjordaMål,
+              'InsläpptaMål': insläpptaMål,
+              'Viktning': viktning,
+              'Procent': procent,
+              'SpeladeMatcher': (vinster + losses)
+          }
+      allPlayersStats.push(query)
+    })
+    return allPlayersStats;
+}

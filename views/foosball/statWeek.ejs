@@ -22,12 +22,13 @@
                     <% dataname.forEach(player => { %>
                     <tr>
                         <td><%= player.Spelare %></td>
-                        <td><%= player.Vinster + player.Förluster%></td>
+                        <td><%= player.SpeladeMatcher%></td>
                         <td><%= player.Vinster %></td>
                         <td><%= player.Förluster %></td>
                         <td><%= Math.round(player.Vinster/(player.Förluster+player.Vinster)*1000)/10 %> %</td>
                         <td><%= player.GjordaMål-player.InsläpptaMål %></td>
-                        <td><%= Math.round(((Math.pow(player.Vinster/((player.Förluster) + (player.Vinster)),3) * player.Vinster) + Math.round(player.GjordaMål-player.InsläpptaMål)*0.001)*100)/100 %></td>
+                        <td><%= Math.round(player.Viktning*100)/100 %></td>
+                        <!--<td>Math.round(((Math.pow(player.Vinster/((player.Förluster) + (player.Vinster)),3) * player.Vinster) + Math.round(player.GjordaMål-player.InsläpptaMål)*0.001)*100)/100</td>-->
                     </tr>
                     <% }) %>
                 </tbody>
