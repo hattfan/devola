@@ -13,7 +13,7 @@
                 <tbody>
                     <% data.forEach(player => { %>
                         <tr>
-                            <td><a name="" id="" class="btn btn-danger noMargin" href="/foosball/remove/<%= player['_id'] %>" role="button">Tag bort</a> <%= player.Spelare %> </td>
+                            <td><a class="btn btn-danger noMargin" href="/foosball/remove/<%= player['_id'] %>" role="button">Inaktivera</a> <a class="btn btn-success noMargin" href="/foosball/activate/<%= player['_id'] %>" role="button">Aktivera</a> <%= player.Spelare %> - <%= player['Aktiv']===true?'Aktiv':'Inaktiv' %> </td> </td>
                         </tr>
                         <% }) %>
                 </tbody>

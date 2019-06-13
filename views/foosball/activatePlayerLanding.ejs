@@ -1,14 +1,11 @@
 <% include ./partials/header.ejs %>
-<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="../css/landing.css">
     <!-- Landing Page -->
     <div class="container">
         <div class="landing">
-            <h1>Admin</h1>
-            <h3>Välj vad du vill administrera</h3>
-            <a class="btn btn-success" href="newPlayer"><i class="fas fa-chart-pie"></i> Ny spelare</a> 
-            <a class="btn btn-success"  href="removePlayer"><i class="fas fa-chart-pie"></i> Ändra status på spelare</a>
-            <a class="btn btn-success"  href="allGames"><i class="fas fa-chart-pie"></i> Ta bort match</a>
-            <a class="btn btn-danger"  href="leagueUpdate"><i class="fas fa-chart-pie"></i> Uppdatera ligor</a>
+            <h1>Yes!</h1>
+            <h3>Spelarn är satt som aktiv spelare <i class="fa fa-thumbs-up" aria-hidden="true"></i></h3>
+            <% include ./partials/buttonsLanding.ejs %>
         </div>
     </div>
 

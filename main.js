@@ -128,7 +128,7 @@ MongoClient.connect(url, (err, client) => {
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
         vecka = datum.getFullYear() + ' - ' + vecka
 
-        var newPlayer = { 'Spelare': req.body.playerNamn }
+        var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
         db.collection("aktiva").insert(newPlayer, function (err, resDB) {
             if (err) throw err
         })
@@ -172,10 +172,22 @@ MongoClient.connect(url, (err, client) => {
 
         var o_id = new mongo.ObjectId(req.params.id)
         // console.log(o_id)
-        db.collection("aktiva").deleteOne({ '_id': o_id }, function (err, data) {
+        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
             if (err) throw err
             // console.log(data)
             res.render('foosball/removePlayerLanding.ejs')
+        })
+    });
+    
+    app.get("/foosball/activate/:id", (req, res) => {
+        //find the campground with provided id in DB
+
+        var o_id = new mongo.ObjectId(req.params.id)
+        // console.log(o_id)
+        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+            if (err) throw err
+            // console.log(data)
+            res.render('foosball/activatePlayerLanding.ejs')
         })
     });
 
@@ -194,6 +206,20 @@ MongoClient.connect(url, (err, client) => {
             if (err) throw err
             // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/nyaslumpen.ejs', { data: data });
+        })
+    });
+        app.get('/foosball/nyaslumpen2', function (req, res) {
+
+            res.render('foosball/nyaslumparn.ejs')
+
+    });
+    
+   app.get('/foosball/nyaslumpengetplayers', function (req, res) {
+
+        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+            if (err) throw err
+            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+            res.json(data)
         })
     });
 

@@ -15,5 +15,5 @@ print('Running')
 
 # För varje artikel, kör loopen
 for row in dbdata:
-    print(x)
-    # mycol.insert_one(productValues)
+    print(row)
+    mycol.update_one({$set:{'Aktiv':true}})
