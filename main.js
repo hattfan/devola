@@ -207,7 +207,7 @@ MongoClient.connect(url, (err, client) => {
     });
         app.get('/foosball/slump', function (req, res) {
 
-            res.render('foosball/nyaslumparn.ejs')
+            res.render('foosball/slump.ejs')
 
     });
     
