@@ -38,9 +38,6 @@ MongoClient.connect(url, (err, client) => {
         res.render('foosball/tusenklubben.ejs');
     });
 
-    app.get('/foosball/slump', function (req, res) {
-        res.render('foosball/slump.ejs');
-    });
 
     app.get('/foosball/reglanding', function (req, res) {
         res.render('foosball/reglanding.ejs');

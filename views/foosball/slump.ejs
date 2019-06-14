@@ -7,43 +7,54 @@
         <div id="slump" class="slump">
         </div>
         <script>
+        fetch('../foosball/nyaslumpengetplayers',{credentials: 'same-origin'})
+            .then(
+                function (response) {
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+                    
+                    // Examine the text in the response
+                    response.json().then(function (data) {
+                        console.log(data)
+                    
+                    var players= [];
+                    data.forEach(row => {
+                        if(row.Aktiv === true) players.push("<p style='text-align:center' class='btn btn-primary btn-md'>" + row.Spelare + "</p><br>")
+                    })
+                    console.log(players)
+            
+                        var ranNums = shuffle(players);
+                        document.getElementById("slump").innerHTML = ranNums;
+                        
+                    });
+                }
+            )
+            .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+
             function shuffle(array) {
                 var i = array.length,
                     j = 0,
                     temp;
-
+    
                 while (i--) {
-
+    
                     j = Math.floor(Math.random() * (i + 1));
-
+    
                     // swap randomly chosen element with current element
                     temp = array[i];
                     array[i] = array[j];
                     array[j] = temp;
-
+    
                 }
 
-                return array;
-            }
-
-            var ranNums = shuffle([
-                "<img src=img/Spelare/olakarlsson.jpg> Åla<br>",
-                "<img src=img/Spelare/davidcarlsson.jpg> DC Carlsson<br>",
-                "<img src=img/Spelare/jonathanhedenbergh.jpg> Lilljuzz Hedenberg 57%<br>",
-                "<img src=img/Spelare/sarahartwig.jpg> $ara Hartwig<br>",
-                "<img src=img/Spelare/jesperkjellström.jpg> Papa Juzzi 59%<br>",
-                "<img src=img/Spelare/patriknilsson.jpg> Putt Nilsson<br>",
-                "<img src=img/Spelare/patriknilsson.jpg> Dragongball Jeremic<br>",
-                "<img src=img/Spelare/gustavstenberg.jpg> Guzzi Bolltapp<br>",
-                "<img src=img/Spelare/helenapixsjö.jpg> Helena Vinnarlake<br>",
-                "<img src=img/Spelare/evelinalundgren.jpg> Evelina Lundgren<br>",
-                "<img src=img/Spelare/christoffer_bengtsson.jpg> Kryckan Bengtsson<br>",
-                "<img src=img/Spelare/patriknilsson.jpg> Larsson Joakim<br> ",
-                "<img src=img/Spelare/tobbesparge.jpg> Combaek Többe<br>",
-                "<img src=img/Spelare/girlgeneric.png> Tove Grimslätt<br>"
-
-            ]);
-            document.getElementById("slump").innerHTML = ranNums;
+            return array;
+        }
+            
         </script>
         <hr>
         <input type="button" class="btn btn-success btn-block" value="Slumpa om" onClick="window.location.reload()">
