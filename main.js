@@ -280,6 +280,25 @@ MongoClient.connect(url, (err, client) => {
         
     })
 
+    app.get('/foosball/historikinsamling', function(req, res) {
+        var allPlayers = [];
+
+        db.collection('stat').find().toArray(function(err,result){
+            if(err) throw err
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            // console.log(historicStats);
+            })
+            calculateColumnOne(result, allPlayers);
+
+            // var historicStats = calculatePlayerForHistory(result, allPlayers);
+        })
+    })
 
     app.get('/foosball/statsMonth', function (req, res) {
         var datum = new Date();
@@ -322,34 +341,38 @@ MongoClient.connect(url, (err, client) => {
     })
 
 
-    app.get('/foosball/statsTotal', function (req, res) {
-        db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            res.render("foosball/statTotal.ejs", { dataname: data })
-        })
-    })
+    // app.get('/foosball/statsTotal', function (req, res) {
+    //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+    //         if (err) throw err
+    //         res.render("foosball/statTotal.ejs", { dataname: data })
+    //     })
+    // })
     
-        app.get('/foosball/statsTotal2', function (req, res) {
-        db.collection("stat").find({}).toArray(function (err, result) {
-                    console.log(result.length);
-        var allPlayers = [];
-          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
-          
-          options.forEach(option => {
-            var arrayEv = [...new Set(result.map(item => item[option]))];
-            arrayEv.forEach(player => {
-              allPlayers.includes(player)?null:allPlayers.push(player);
-            })
-          })
-          
-        var playerStatistics = calculatePlayer(result, allPlayers);
-        
-        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
-                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
-                     : 0;                   // a and b are equal
-            });
+    app.get('/foosball/statsTotal', function (req, res) {
+        if (err) throw err
+
+        db.collection('stat').find().toArray(function(err,result){
             
-            res.render("foosball/statTotal.ejs", { dataname: sorted })
+        // console.log(result);
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            })
+          
+            var playerStatistics = calculatePlayer(result, allPlayers);
+
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
+            });
+        
+            res.render('foosball/statTotal.ejs', {dataname:sorted})
         })
     })
   
@@ -706,40 +729,38 @@ app.get('/worldoffoosball/', function (req, res) {
 });
 
 
-
-
-  
 function calculatePlayer(matches, allPlayers){
     
     var allPlayersStats = [];
+    
+    console.log(matches);
     
     allPlayers.forEach(player => {
         var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
         matches.forEach(match => {
           if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
-                if (match['Lag1Matchvinst'] > match['Lag2Matchvinst']) {
+                if (match['Lag1'] > match['Lag2']) {
                     vinster = vinster + 1;
                     gjordaMål = gjordaMål + Number(match['Lag1']);
                     insläpptaMål = insläpptaMål + Number(match['Lag2']);
-                } else if (match['Lag1Matchvinst'] < match['Lag2Matchvinst']) {
+                } else if (match['Lag1'] < match['Lag2']) {
                       losses = losses + 1;  
                       gjordaMål = gjordaMål + Number(match['Lag1']);
                       insläpptaMål = insläpptaMål + Number(match['Lag2']);
                 }
             }
             else if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
-                if (match['Lag1Matchvinst'] < match['Lag2Matchvinst']) {
+                if (match['Lag1'] < match['Lag2']) {
                       vinster = vinster + 1;
                       gjordaMål = gjordaMål + Number(match['Lag2']);
                       insläpptaMål = insläpptaMål + Number(match['Lag1']);
-                } else if (match['Lag1Matchvinst'] > match['Lag2Matchvinst']) {
+                } else if (match['Lag1'] > match['Lag2']) {
                       losses = losses + 1;  
                       gjordaMål = gjordaMål + Number(match['Lag2']);
                       insläpptaMål = insläpptaMål + Number(match['Lag1']);
                 }
             }
-    
-            viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
+                        viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
             procent = Math.round(vinster / (vinster + losses) * 100) / 100
 
           

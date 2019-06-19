@@ -26,7 +26,7 @@
                         <td><%= player.Förluster %></td>
                         <td><%= Math.round(player.Vinster/(player.Förluster+player.Vinster)*1000)/10 %> %</td>
                         <td><%= player.GjordaMål-player.InsläpptaMål %></td>
-                        <td><%= Math.round(player.Viktning*100)/100 %></td>
+                        <td><%= Math.round((Math.pow(player.Vinster/((player.Förluster) + (player.Vinster)),3) * player.Vinster)*100)/100 %></td>
                     </tr>
                     <% }) %>
                 </tbody>
