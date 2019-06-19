@@ -268,9 +268,10 @@ MongoClient.connect(url, (err, client) => {
           
         var playerStatistics = calculatePlayer(result, allPlayers);
 
-        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
-                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
-                     : 0;                   // a and b are equal
+        var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
             });
         
         res.render('foosball/statWeek.ejs', {dataname:sorted, vecka: vecka})
@@ -301,11 +302,12 @@ MongoClient.connect(url, (err, client) => {
           
         var playerStatistics = calculatePlayer(result, allPlayers);
 
-        var sorted = playerStatistics.sort((a, b) => { // non-anonymous as you ordered...
-                return b.Viktning > a.Viktning ?  1 // if b should come earlier, push a to end
-                     : 0;                   // a and b are equal
+        var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
             });
-        
+            
         res.render('foosball/statMonth.ejs', {dataname:sorted, månad: månad})
             
         })
