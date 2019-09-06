@@ -614,7 +614,36 @@ MongoClient.connect(url, (err, client) => {
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
         app.get('/pingis', function (req, res) {
-            res.render('pingis/index.ejs');
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+                
+            // console.log(result);
+            var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+                
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+                })
+                
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                        : a.Viktning > b.Viktning ?  -1
+                        :0;                   
+            });
+            console.log(sorted);
+            lastWeeksWinner = null;
+            
+            res.render('pingis/index.ejs', {lastWeeksWinner:lastWeeksWinner});
+            });
         });
     
         app.get('/pingis/tusenklubben', function (req, res) {
