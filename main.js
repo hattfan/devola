@@ -22,6 +22,16 @@ app.use(function (req, res, next) {
 var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball"
 // var url = "mongodb://localhost:27017"
 
+var todayHour = new Date().getHours();
+var todayDay = new Date().getDay();
+if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
+    var http = require("http");
+    setInterval(function() {
+        http.get("http://devola.herokuapp.com");
+        console.log("Ah ah ah ah staying alive")
+    }, 1800000); // every 30 minutes
+} 
+
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
     if (err) throw err;
