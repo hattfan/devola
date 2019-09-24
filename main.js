@@ -20,7 +20,16 @@ app.use(function (req, res, next) {
 });
 
 var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball"
-// var url = "mongodb://localhost:27017"
+
+var todayHour = new Date().getHours();
+var todayDay = new Date().getDay();
+if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
+    var http = require("http");
+    setInterval(function() {
+        http.get("http://devola.herokuapp.com");
+        console.log("Ah ah ah ah staying alive")
+    }, 900000); // every 30 minutes
+} 
 
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
@@ -59,7 +68,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("stat").deleteOne({ '_id': o_id }, function (err, data) {
             if (err) throw err
-            // console.log(data)
             res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
         });
     });
@@ -139,19 +147,16 @@ MongoClient.connect(url, (err, client) => {
         var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
         db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i månadsligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
         db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
         db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         res.redirect("/foosball/newPlayerLanding");
@@ -168,10 +173,8 @@ MongoClient.connect(url, (err, client) => {
         //find the campground with provided id in DB
 
         var o_id = new mongo.ObjectId(req.params.id)
-        // console.log(o_id)
         db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
             if (err) throw err
-            // console.log(data)
             res.render('foosball/removePlayerLanding.ejs')
         })
     });
@@ -180,10 +183,8 @@ MongoClient.connect(url, (err, client) => {
         //find the campground with provided id in DB
 
         var o_id = new mongo.ObjectId(req.params.id)
-        // console.log(o_id)
         db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
             if (err) throw err
-            // console.log(data)
             res.render('foosball/activatePlayerLanding.ejs')
         })
     });
@@ -192,7 +193,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("aktiva").find({}).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/removePlayer.ejs', { data: data });
         })
     });
@@ -201,7 +201,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/nyaslumpen.ejs', { data: data });
         })
     });
@@ -215,7 +214,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.json(data)
         })
     });
@@ -225,7 +223,6 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/slumpPlayers', function (req, res) {
         db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/slumpPlayers.ejs', { data: data });
         })
     })
@@ -255,7 +252,6 @@ MongoClient.connect(url, (err, client) => {
         vecka = datum.getFullYear() + ' - ' + vecka;
         db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
             
-        // console.log(result);
         var allPlayers = [];
           var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -292,7 +288,6 @@ MongoClient.connect(url, (err, client) => {
                 arrayEv.forEach(player => {
                     allPlayers.includes(player)?null:allPlayers.push(player);
                 })
-            // console.log(historicStats);
             })
             calculateColumnOne(result, allPlayers);
 
@@ -308,7 +303,6 @@ MongoClient.connect(url, (err, client) => {
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
         db.collection('stat').find({'Månad':månad}).toArray(function(err,result){
             
-        // console.log(result);
         var allPlayers = [];
           var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -353,7 +347,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection('stat').find().toArray(function(err,result){
             
-        // console.log(result);
             var allPlayers = [];
             var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -434,7 +427,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("stat").insert(newPost, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd match ' + resDB.insertedCount)
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!! TOTAL-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -447,11 +439,9 @@ MongoClient.connect(url, (err, client) => {
                     if (spelare.hasOwnProperty(key)) {
                         const spelarenr = spelare[key];
                         res.forEach(spelarStat => {
-                            console.log(Object.values(spelarStat));
                             if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
                                 spelareloggade.push(spelarenr)
                                 var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                // console.log(query)
                                 pushArr.push(query)
                                 db.collection('playerTotal').update({ '_id': spelarStat['_id'] }, {
                                     $set: {
@@ -460,7 +450,6 @@ MongoClient.connect(url, (err, client) => {
                                     }
                                 }, function (err, res) {
                                     if (err) throw err
-                                    // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
                                 })
                             }
                         })
@@ -474,7 +463,6 @@ MongoClient.connect(url, (err, client) => {
                         }
                         db.collection('playerTotal').insert(insertDB, function (err, res) {
                             if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
                         })
                     } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
                         insertDB = {
@@ -483,7 +471,6 @@ MongoClient.connect(url, (err, client) => {
                         }
                         db.collection('playerTotal').insert(insertDB, function (err, res) {
                             if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
                         })
                     }
                 }
@@ -621,7 +608,6 @@ MongoClient.connect(url, (err, client) => {
             vecka = datum.getFullYear() + ' - ' + vecka;
             db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
                 
-            // console.log(result);
             var allPlayers = [];
                 var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
                 
@@ -639,7 +625,6 @@ MongoClient.connect(url, (err, client) => {
                         : a.Viktning > b.Viktning ?  -1
                         :0;                   
             });
-            console.log(sorted);
             lastWeeksWinner = null;
             
             res.render('pingis/index.ejs', {lastWeeksWinner:lastWeeksWinner});
@@ -671,7 +656,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("stats_pingis").deleteOne({ '_id': o_id }, function (err, data) {
                 if (err) throw err
-                // console.log(data)
                 res.render(__dirname + "/views/pingis/removeGameLanding.ejs")
             });
         });
@@ -751,19 +735,16 @@ MongoClient.connect(url, (err, client) => {
             var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
             db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
                 if (err) throw err
-                console.log('Inlagd spelare i månadsligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             })
     
             var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
             db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
                 if (err) throw err
-                console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             })
     
             var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
             db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
                 if (err) throw err
-                console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             })
     
             res.redirect("/pingis/newPlayerLanding");
@@ -780,10 +761,8 @@ MongoClient.connect(url, (err, client) => {
             //find the campground with provided id in DB
     
             var o_id = new mongo.ObjectId(req.params.id)
-            // console.log(o_id)
             db.collection("aktiva_pingis").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
                 if (err) throw err
-                // console.log(data)
                 res.render('pingis/removePlayerLanding.ejs')
             })
         });
@@ -792,10 +771,8 @@ MongoClient.connect(url, (err, client) => {
             //find the campground with provided id in DB
     
             var o_id = new mongo.ObjectId(req.params.id)
-            // console.log(o_id)
             db.collection("aktiva_pingis").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
                 if (err) throw err
-                // console.log(data)
                 res.render('pingis/activatePlayerLanding.ejs')
             })
         });
@@ -804,7 +781,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("aktiva_pingis").find({}).toArray(function (err, data) {
                 if (err) throw err
-                // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
                 res.render('pingis/removePlayer.ejs', { data: data });
             })
         });
@@ -813,7 +789,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
                 if (err) throw err
-                // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
                 res.render('pingis/nyaslumpen.ejs', { data: data });
             })
         });
@@ -827,7 +802,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
                 if (err) throw err
-                // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
                 res.json(data)
             })
         });
@@ -837,7 +811,6 @@ MongoClient.connect(url, (err, client) => {
         app.get('/pingis/slumpPlayers', function (req, res) {
             db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
                 if (err) throw err
-                // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
                 res.render('pingis/slumpPlayers.ejs', { data: data });
             })
         })
@@ -867,7 +840,6 @@ MongoClient.connect(url, (err, client) => {
             vecka = datum.getFullYear() + ' - ' + vecka;
             db.collection("stats_pingis").find({'Vecka':vecka}).toArray(function(err,result){
                 
-            // console.log(result);
             var allPlayers = [];
               var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
               
@@ -904,7 +876,6 @@ MongoClient.connect(url, (err, client) => {
                     arrayEv.forEach(player => {
                         allPlayers.includes(player)?null:allPlayers.push(player);
                     })
-                // console.log(historicStats);
                 })
                 calculateColumnOne(result, allPlayers);
     
@@ -920,7 +891,6 @@ MongoClient.connect(url, (err, client) => {
             moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
             db.collection("stats_pingis").find({'Månad':månad}).toArray(function(err,result){
                 
-            // console.log(result);
             var allPlayers = [];
               var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
               
@@ -965,7 +935,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("stats_pingis").find().toArray(function(err,result){
                 
-            // console.log(result);
                 var allPlayers = [];
                 var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
               
@@ -1046,8 +1015,6 @@ MongoClient.connect(url, (err, client) => {
     
             db.collection("stats_pingis").insert(newPost, function (err, resDB) {
                 if (err) throw err
-                console.log('Inlagd match ' + resDB.insertedCount)
-    
                 res.redirect("/pingis/reglanding");
             })
         })
@@ -1061,6 +1028,10 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/starcraft/register', function (req, res) {
+        db.collection('starcraft_register').find().toArray(function (err, players) {
+            if (err) throw err
+            res.render('starcraft/register.ejs', {players : players});
+        })
         res.render('starcraft/register.ejs');
     });
 
@@ -1097,6 +1068,8 @@ MongoClient.connect(url, (err, client) => {
             if (err) throw err
             res.render('starcraft/register.ejs');
         })
+
+
     });
 
     app.get('/starcraft/data', function (req, res) {
@@ -1174,8 +1147,6 @@ app.get('/worldoffoosball/', function (req, res) {
 function calculatePlayer(matches, allPlayers){
     
     var allPlayersStats = [];
-    
-    console.log(matches);
     
     allPlayers.forEach(player => {
         var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
