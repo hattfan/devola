@@ -3,7 +3,7 @@ html { overflow-y: scroll; }
 body { padding-top: 70px; }
 
 body {
-    background-image: url(../img/pingis_field.png);
+    background-image: url(../img/carlpong_field.png);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

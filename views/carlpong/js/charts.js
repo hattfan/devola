@@ -1,4 +1,4 @@
-fetch('../pingis/data',{credentials: 'same-origin'})
+fetch('../carlpong/data',{credentials: 'same-origin'})
     .then(
         function (response) {
             if (response.status !== 200) {

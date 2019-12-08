@@ -13,7 +13,7 @@
                 <tbody>
                     <% data.forEach(player => { %>
                         <tr>
-                            <td><a class="btn btn-danger noMargin" href="/pingis/remove/<%= player['_id'] %>" role="button">Inaktivera</a> <a class="btn btn-primary noMargin" href="/pingis/activate/<%= player['_id'] %>" role="button">Aktivera</a> <%= player.Spelare %> - <%= player['Aktiv']===true?'Aktiv':'Inaktiv' %> </td> </td>
+                            <td><a class="btn btn-danger noMargin" href="/carlpong/remove/<%= player['_id'] %>" role="button">Inaktivera</a> <a class="btn btn-primary noMargin" href="/carlpong/activate/<%= player['_id'] %>" role="button">Aktivera</a> <%= player.Spelare %> - <%= player['Aktiv']===true?'Aktiv':'Inaktiv' %> </td> </td>
                         </tr>
                         <% }) %>
                 </tbody>

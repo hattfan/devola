@@ -52,7 +52,7 @@ MongoClient.connect(url, (err, client) => {
 //! Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-app.get('/pingis', function (req, res) {
+app.get('/carlpong', function (req, res) {
     res.render('foosball/index.ejs');
 });
 
@@ -75,32 +75,32 @@ app.get('/reglanding', function (req, res) {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //! Foosball ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-app.get('/pingis/admin', function (req, res) {
+app.get('/carlpong/admin', function (req, res) {
     res.render('foosball/adminLanding.ejs');
 });
 
-app.get('/pingis/data/vecka', function (req, res) {
+app.get('/carlpong/data/vecka', function (req, res) {
     db.collection("playerWeek").distinct('vecka', function(err, veckor){
         res.json(veckor)
     })
 });
 
 
-app.get('/pingis/history', function (req, res) {
+app.get('/carlpong/history', function (req, res) {
     db.collection("playerWeek").distinct('vecka', function(err, veckor){
         res.render('foosball/history.ejs', {veckor:JSON.stringify(veckor)});
     })
 });
 
-app.get('/pingis/newPlayer', function (req, res) {
+app.get('/carlpong/newPlayer', function (req, res) {
     res.render('foosball/newPlayer.ejs');
 });
 
-app.get('/pingis/newPlayerLanding', function (req, res) {
+app.get('/carlpong/newPlayerLanding', function (req, res) {
     res.render('foosball/newPlayerLanding.ejs');
 });
 
-app.get("/pingis/remove/:id", (req, res) => {
+app.get("/carlpong/remove/:id", (req, res) => {
     //find the campground with provided id in DB
 
     var o_id = new mongo.ObjectId(req.params.id)

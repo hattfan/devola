@@ -29,7 +29,7 @@ function createGame() {
         <div id="game1player2">${matcher.firstGame[1]}</div>
     </div>
     <div class="fosball-div">
-        <img id="foosball-image" src="img/pingis_field.png">
+        <img id="foosball-image" src="img/carlpong_field.png">
     </div>
     <div class="player-field">
         <div id="game2player1">${matcher.firstGame[2]}</div>
@@ -45,7 +45,7 @@ function createGame() {
             <div id="game1player2">${matcher.secondGame[1]}</div>
         </div>
         <div class="fosball-div">
-            <img id="foosball-image" src="img/pingis_field.png">
+            <img id="foosball-image" src="img/carlpong_field.png">
         </div>
         <div class="player-field">
             <div id="game2player1">${matcher.secondGame[2]}</div>
@@ -63,7 +63,7 @@ function createGame() {
     <div id="game1player2">${matcher.firstGame[1]}</div>
 </div>
 <div class="fosball-div">
-    <img id="foosball-image" src="img/pingis_field.png">
+    <img id="foosball-image" src="img/carlpong_field.png">
 </div>
 <div class="player-field">
     <div id="game2player1">${matcher.firstGame[2]}</div>
@@ -79,7 +79,7 @@ function createGame() {
 <div id="game1player2">${matcher.secondGame[1]}</div>
 </div>
 <div class="fosball-div">
-<img id="foosball-image" src="img/pingis_field.png">
+<img id="foosball-image" src="img/carlpong_field.png">
 </div>
 <div class="player-field">
 <div id="game2player1">${matcher.secondGame[2]}</div>
