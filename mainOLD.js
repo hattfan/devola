@@ -101,9 +101,16 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/foosball/data', function (req, res) {
-        db.collection('stat').find().sort({"Tidstämpel":1}).toArray(function(err,result){
-            res.json(result);
-        });
+        db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, monthData) {
+            if (err) throw err
+            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, veckoData) {
+                if (err) throw err
+                var data = {}
+                data.month = monthData
+                data.vecka = veckoData
+                res.json(data)
+            })
+        })
     });
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1105,9 +1112,16 @@ MongoClient.connect(url, (err, client) => {
         });
     
         app.get('/carlpong/data', function (req, res) {
-            db.collection('stats_carlpong').find().sort({"Tidstämpel":1}).toArray(function(err,result){
-                res.json(result);
-            });
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, monthData) {
+                if (err) throw err
+                db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, veckoData) {
+                    if (err) throw err
+                    var data = {}
+                    data.month = monthData
+                    data.vecka = veckoData
+                    res.json(data)
+                })
+            })
         });
     
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1585,6 +1599,8 @@ function calculatePlayer(matches, allPlayers){
             }
                         viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
             procent = Math.round(vinster / (vinster + losses) * 100) / 100
+
+          
         })
         var query = {
               'Spelare' : player,
