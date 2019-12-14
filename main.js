@@ -1428,6 +1428,423 @@ MongoClient.connect(url, (err, client) => {
                 res.redirect("/carlpong/reglanding");
             })
         })
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Carlpong Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel', function (req, res) {
+            
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag2Spelare1'];
+                
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+                })
+                
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                        : a.Viktning > b.Viktning ?  -1
+                        :0;                   
+            });
+            lastWeeksWinner = null;
+            
+            res.render('padel/index.ejs', {lastWeeksWinner:lastWeeksWinner});
+            });
+        });
+    
+        app.get('/padel/tusenklubben', function (req, res) {
+            res.render('padel/tusenklubben.ejs');
+        });
+    
+    
+        app.get('/padel/reglanding', function (req, res) {
+            res.render('padel/reglanding.ejs');
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! padel ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/padel/admin', function (req, res) {
+            res.render('padel/adminLanding.ejs');
+        });
+    
+        app.get("/padel/removeGame/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+    
+            // var parameters = req.params
+    
+            db.collection("stats_padel").deleteOne({ '_id': o_id }, function (err, data) {
+                if (err) throw err
+                res.render(__dirname + "/views/padel/removeGameLanding.ejs")
+            });
+        });
+    
+        app.get("/padel/leagueUpdate", (req, res) => {
+            require(__dirname + "/views/padel/js/mongo/statsVeckaUpdate.js")
+        })
+    
+        //!History route
+        app.get('/padel/history', function (req, res) {
+            db.collection("playerWeek").distinct('vecka', function (err, veckor) {
+                res.render('padel/history.ejs', { veckor: JSON.stringify(veckor) });
+            })
+        });
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! data-routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/padel/data/vecka', function (req, res) {
+            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+    
+            })
+        });
+    
+        app.get('/padel/data/month', function (req, res) {
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        app.get('/padel/data', function (req, res) {
+            db.collection('stats_padel').find().sort({"Tidstämpel":1}).toArray(function(err,result){
+                res.json(result);
+            });
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/newPlayer', function (req, res) {
+            res.render('padel/newPlayer.ejs');
+        });
+    
+        app.get('/padel/newPlayerLanding', function (req, res) {
+            res.render('padel/newPlayerLanding.ejs');
+        });
+    
+        app.post("/padel/newPlayer", function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
+            db.collection("aktiva_padel").insert(newPlayer, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            // var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
+            // db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+    
+            // })
+    
+            // var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
+            // db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            res.redirect("/padel/newPlayerLanding");
+        })
+    
+    
+        //! End Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Remove player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get("/padel/remove/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_padel").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
+                if (err) throw err
+                res.render('padel/removePlayerLanding.ejs')
+            })
+        });
+        
+        app.get("/padel/activate/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_padel").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+                if (err) throw err
+                res.render('padel/activatePlayerLanding.ejs')
+            })
+        });
+    
+        app.get('/padel/removePlayer', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/removePlayer.ejs', { data: data });
+            })
+        });
+    
+        app.get('/padel/nyaslumpen', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/nyaslumpen.ejs', { data: data });
+            })
+        });
+            app.get('/padel/slump', function (req, res) {
+    
+                res.render('padel/slump.ejs')
+    
+        });
+        
+       app.get('/padel/nyaslumpengetplayers', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/slumpPlayers', function (req, res) {
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/slumpPlayers.ejs', { data: data });
+            })
+        })
+    
+    
+        app.get('/padel/register', function (req, res) {
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render('padel/register.ejs', { data: data });
+            })
+        })
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/statLanding', function (req, res) {
+            res.render('padel/statLanding.ejs');
+        });
+        
+        app.get('/padel/statsWeek', function (req, res) {
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection("stats_padel").find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+            res.render('padel/statWeek.ejs', {dataname:sorted, vecka: vecka})
+                
+            })
+            
+        })
+    
+        app.get('/padel/historikinsamling', function(req, res) {
+            var allPlayers = [];
+    
+            db.collection("stats_padel").find().toArray(function(err,result){
+                if(err) throw err
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+                calculateColumnOne(result, allPlayers);
+    
+                // var historicStats = calculatePlayerForHistory(result, allPlayers);
+            })
+        })
+    
+        app.get('/padel/statsMonth', function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+            db.collection("stats_padel").find({'Månad':månad}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+                
+            res.render('padel/statMonth.ejs', {dataname:sorted, månad: månad})
+                
+            })
+    
+        })
+    
+        app.get('/padel/statsVroom', function (req, res) {
+            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render("padel/statVroom.ejs", { dataname: data })
+            })
+        })
+    
+    
+        // app.get('/padel/statsTotal', function (req, res) {
+        //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+        //         if (err) throw err
+        //         res.render("padel/statTotal.ejs", { dataname: data })
+        //     })
+        // })
+        
+        app.get('/padel/statsTotal', function (req, res) {
+            if (err) throw err
+    
+            db.collection("stats_padel").find().toArray(function(err,result){
+                
+                var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+                options.forEach(option => {
+                    var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+              
+                var playerStatistics = calculatePlayer(result, allPlayers);
+    
+                var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+                res.render('padel/statTotal.ejs', {dataname:sorted})
+            })
+        })
+      
+        app.get('/padel/allGames', function (req, res) {
+    
+            db.collection("stats_padel").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render("padel/allGames.ejs", { dataname: data, moment: moment })
+            })
+        })
+    
+    
+            // CREATE - add new campground to DB
+        app.post("/padel/resultat", function (req, res) {
+            var Lag1Matchvinst, Lag2Matchvinst;
+            var Lag1 = Number(req.body.goalTeam1)
+            var Lag2 = Number(req.body.goalTeam2)
+            if (Lag1 > Lag2) {
+                Lag1Matchvinst = 1
+                Lag2Matchvinst = 0
+            }
+            else if (Lag1 < Lag2) {
+                Lag1Matchvinst = 0
+                Lag2Matchvinst = 1
+            }
+            var datum = new Date();
+            // datum.setDate(datum.getDate() + 5);
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            // get data from the form
+            var newPost = {
+                "Tidstämpel": datum,
+                "Lag1Spelare1": req.body.player1Team1,
+                "Lag1Spelare2": req.body.player2Team1,
+                "Lag1": req.body.goalTeam1,
+                "Lag2Spelare1": req.body.player1Team2,
+                "Lag2Spelare2": req.body.player2Team2,
+                "Lag2": req.body.goalTeam2,
+                "Lag1Matchvinst": Lag1Matchvinst,
+                "Lag2Matchvinst": Lag2Matchvinst,
+                "Datum": datum,
+                "Månad": månad,
+                "Vecka": vecka
+            };
+    
+            var spelare = {
+                spelare1: req.body.player1Team1,
+                // spelare2: req.body.player2Team1,
+                spelare3: req.body.player1Team2,
+                // spelare4: req.body.player2Team2
+            }
+            // var spelareArr = [req.body.player1Team1, req.body.player2Team1, req.body.player1Team2, req.body.player2Team2]
+            var spelareArr = [req.body.player1Team1, req.body.player1Team2]
+    
+    
+            db.collection("stats_padel").insert(newPost, function (err, resDB) {
+                if (err) throw err
+                res.redirect("/padel/reglanding");
+            })
+        })
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //! Starcraft-slumpen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
