@@ -1720,8 +1720,6 @@ MongoClient.connect(url, (err, client) => {
             var datum = new Date();
     
             var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-    
-            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
             db.collection("stats_padel").find({'Månad':månad}).toArray(function(err,result){
                 
             var allPlayers = [];
