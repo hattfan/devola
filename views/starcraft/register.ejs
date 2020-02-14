@@ -8,10 +8,9 @@
                 <div class="form-group selection-container">
                     <label for="exampleFormControlSelect11">Spelare 1</label>
                     <select class="form-control" name="player1Team1" required>
-                        <option value="Larz" selected>Larz</option>
-                        <option value="Korben">Korben</option>
-                        <option value="Danne">Danne</option>
-                        <option value="Hatten">Hatten</option>
+                        <% players.foreach(player => { %>
+                            <option value="<%= player %>"><%= player %></option>
+                        <% }) %>
                     </select>
                 </div>
                 <div class="form-group selection-container">
@@ -28,10 +27,9 @@
                 <div class="form-group selection-container">
                     <label for="exampleFormControlSelect12">Spelare 2</label>
                     <select class="form-control" name="player2Team1" required>
-                        <option value="Larz">Larz</option>
-                        <option value="Korben" selected>Korben</option>
-                        <option value="Danne">Danne</option>
-                        <option value="Hatten">Hatten</option>
+                        <% players.foreach(player => { %>
+                            <option value="<%= player %>"><%= player %></option>
+                        <% }) %>
                     </select>
                 </div>
                 <div class="form-group selection-container">
@@ -54,10 +52,9 @@
                 <div class="form-group selection-container">
                     <label for="exampleFormControlSelect21">Spelare 1</label>
                     <select class="form-control" name="player1Team2" required>
-                        <option value="Larz">Larz</option>
-                        <option value="Korben">Korben</option>
-                        <option value="Danne" selected>Danne</option>
-                        <option value="Hatten">Hatten</option>
+                        <% players.foreach(player => { %>
+                            <option value="<%= player %>"><%= player %></option>
+                        <% }) %>
                     </select>
                 </div>
                 <div class="form-group selection-container">
@@ -74,10 +71,9 @@
                 <div class="form-group selection-container">
                     <label for="exampleFormControlSelect22">Spelare 2</label>
                     <select class="form-control" name="player2Team2" required>
-                        <option value="Larz">Larz</option>
-                        <option value="Korben">Korben</option>
-                        <option value="Danne">Danne</option>
-                        <option value="Hatten" selected>Hatten</option>
+                        <% players.foreach(player => { %>
+                            <option value="<%= player %>"><%= player %></option>
+                        <% }) %>
                     </select>
                 </div>
                 <div class="form-group selection-container">

@@ -20,7 +20,16 @@ app.use(function (req, res, next) {
 });
 
 var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball"
-// var url = "mongodb://localhost:27017"
+
+var todayHour = new Date().getHours();
+var todayDay = new Date().getDay();
+if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
+    var http = require("http");
+    setInterval(function() {
+        http.get("http://devola.herokuapp.com");
+        console.log("Ah ah ah ah staying alive")
+    }, 900000); // every 30 minutes
+} 
 
 var todayHour = new Date().getHours();
 var todayDay = new Date().getDay();
@@ -48,9 +57,6 @@ MongoClient.connect(url, (err, client) => {
         res.render('foosball/tusenklubben.ejs');
     });
 
-    app.get('/foosball/slump', function (req, res) {
-        res.render('foosball/slump.ejs');
-    });
 
     app.get('/foosball/reglanding', function (req, res) {
         res.render('foosball/reglanding.ejs');
@@ -72,7 +78,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("stat").deleteOne({ '_id': o_id }, function (err, data) {
             if (err) throw err
-            // console.log(data)
             res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
         });
     });
@@ -106,16 +111,9 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/foosball/data', function (req, res) {
-        db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, monthData) {
-            if (err) throw err
-            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, veckoData) {
-                if (err) throw err
-                var data = {}
-                data.month = monthData
-                data.vecka = veckoData
-                res.json(data)
-            })
-        })
+        db.collection('stat').find().sort({"Tidstämpel":1}).toArray(function(err,result){
+            res.json(result);
+        });
     });
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -138,34 +136,30 @@ MongoClient.connect(url, (err, client) => {
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
         vecka = datum.getFullYear() + ' - ' + vecka
 
-        var newPlayer = { 'Spelare': req.body.playerNamn }
+        var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
         db.collection("aktiva").insert(newPlayer, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
         db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i totalligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
+
         })
 
         var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
         db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i månadsligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
         db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
         db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd spelare i veckoligan' + resDB.insertedCount + ' - ' + req.body.playerNamn)
         })
 
         res.redirect("/foosball/newPlayerLanding");
@@ -182,11 +176,19 @@ MongoClient.connect(url, (err, client) => {
         //find the campground with provided id in DB
 
         var o_id = new mongo.ObjectId(req.params.id)
-        // console.log(o_id)
-        db.collection("aktiva").deleteOne({ '_id': o_id }, function (err, data) {
+        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
             if (err) throw err
-            // console.log(data)
             res.render('foosball/removePlayerLanding.ejs')
+        })
+    });
+    
+    app.get("/foosball/activate/:id", (req, res) => {
+        //find the campground with provided id in DB
+
+        var o_id = new mongo.ObjectId(req.params.id)
+        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+            if (err) throw err
+            res.render('foosball/activatePlayerLanding.ejs')
         })
     });
 
@@ -194,7 +196,6 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("aktiva").find({}).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/removePlayer.ejs', { data: data });
         })
     });
@@ -203,8 +204,20 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/nyaslumpen.ejs', { data: data });
+        })
+    });
+        app.get('/foosball/slump', function (req, res) {
+
+            res.render('foosball/slump.ejs')
+
+    });
+    
+   app.get('/foosball/nyaslumpengetplayers', function (req, res) {
+
+        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+            if (err) throw err
+            res.json(data)
         })
     });
 
@@ -213,7 +226,6 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/slumpPlayers', function (req, res) {
         db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
-            // console.log('Inlagd spelare ' + resDB.insertedCount + ' - ' + req.body.playerNamn)
             res.render('foosball/slumpPlayers.ejs', { data: data });
         })
     })
@@ -234,19 +246,55 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/statLanding', function (req, res) {
         res.render('foosball/statLanding.ejs');
     });
-
+    
     app.get('/foosball/statsWeek', function (req, res) {
+        if (err) throw err
         var datum = new Date();
-        // datum.setDate(datum.getDate() + 5);
-
         var vecka = moment(datum, "MM-DD-YYYY").week()
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
-        vecka = datum.getFullYear() + ' - ' + vecka
+        vecka = datum.getFullYear() + ' - ' + vecka;
+        db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+            
+        var allPlayers = [];
+          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+          options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+            arrayEv.forEach(player => {
+              allPlayers.includes(player)?null:allPlayers.push(player);
+            })
+          })
+          
+        var playerStatistics = calculatePlayer(result, allPlayers);
 
-        db.collection("playerWeek").find({ 'vecka': vecka }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            // console.log(data)
-            res.render("foosball/statWeek.ejs", { dataname: data, vecka: vecka })
+        var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
+            });
+        
+        res.render('foosball/statWeek.ejs', {dataname:sorted, vecka: vecka})
+            
+        })
+        
+    })
+
+    app.get('/foosball/historikinsamling', function(req, res) {
+        var allPlayers = [];
+
+        db.collection('stat').find().toArray(function(err,result){
+            if(err) throw err
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            })
+            calculateColumnOne(result, allPlayers);
+
+            // var historicStats = calculatePlayerForHistory(result, allPlayers);
         })
     })
 
@@ -254,12 +302,32 @@ MongoClient.connect(url, (err, client) => {
         var datum = new Date();
 
         var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-        // var vecka = "2018 - 15"
-        db.collection("playerMonth").find({ 'Månad': månad }).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            // console.log(data)
-            res.render("foosball/statMonth.ejs", { dataname: data, månad: månad })
+
+        moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+        db.collection('stat').find({'Månad':månad}).toArray(function(err,result){
+            
+        var allPlayers = [];
+          var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+          options.forEach(option => {
+            var arrayEv = [...new Set(result.map(item => item[option]))];
+            arrayEv.forEach(player => {
+              allPlayers.includes(player)?null:allPlayers.push(player);
+            })
+          })
+          
+        var playerStatistics = calculatePlayer(result, allPlayers);
+
+        var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
+            });
+            
+        res.render('foosball/statMonth.ejs', {dataname:sorted, månad: månad})
+            
         })
+
     })
 
     app.get('/foosball/statsVroom', function (req, res) {
@@ -270,13 +338,40 @@ MongoClient.connect(url, (err, client) => {
     })
 
 
+    // app.get('/foosball/statsTotal', function (req, res) {
+    //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+    //         if (err) throw err
+    //         res.render("foosball/statTotal.ejs", { dataname: data })
+    //     })
+    // })
+    
     app.get('/foosball/statsTotal', function (req, res) {
-        db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
-            if (err) throw err
-            res.render("foosball/statTotal.ejs", { dataname: data })
+        if (err) throw err
+
+        db.collection('stat').find().toArray(function(err,result){
+            
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            })
+          
+            var playerStatistics = calculatePlayer(result, allPlayers);
+
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                     : a.Viktning > b.Viktning ?  -1
+                     :0;                   
+            });
+        
+            res.render('foosball/statTotal.ejs', {dataname:sorted})
         })
     })
-
+  
     app.get('/foosball/allGames', function (req, res) {
 
         db.collection("stat").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
@@ -287,7 +382,7 @@ MongoClient.connect(url, (err, client) => {
     })
 
 
-    // CREATE - add new campground to DB
+        // CREATE - add new campground to DB
     app.post("/foosball/resultat", function (req, res) {
         var Lag1Matchvinst, Lag2Matchvinst;
         var Lag1 = Number(req.body.goalTeam1)
@@ -335,108 +430,7 @@ MongoClient.connect(url, (err, client) => {
 
         db.collection("stat").insert(newPost, function (err, resDB) {
             if (err) throw err
-            console.log('Inlagd match ' + resDB.insertedCount)
 
-
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!! VECKO-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            var spelareloggade = [], insertDB = {};
-            db.collection('playerWeek').find({ 'vecka': vecka }).toArray(function (err, res) {
-                if (err) throw err
-                var pushArr = [];
-                for (const key in spelare) {
-                    if (spelare.hasOwnProperty(key)) {
-                        const spelarenr = spelare[key];
-                        res.forEach(spelarStat => {
-                            if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                                spelareloggade.push(spelarenr)
-                                var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                // console.log(query)
-                                pushArr.push(query)
-                                db.collection('playerWeek').update({ '_id': spelarStat['_id'] }, {
-                                    $set: {
-                                        'Vinster': query.Vinster, 'Förluster': query['Förluster'],
-                                        'GjordaMål': query['GjordaMål'], 'InsläpptaMål': query['InsläpptaMål'], 'Viktning': query['Viktning']
-                                    }
-                                }, function (err, res) {
-                                    if (err) throw err
-                                    // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
-                                })
-                            }
-                        })
-                    };
-                }
-                for (let i = 0; i < spelareArr.length; i++) {
-                    if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                        insertDB = {
-                            "vecka": vecka, "Spelare": spelareArr[i], "Vinster": Lag1Matchvinst, "Förluster": Lag2Matchvinst, "GjordaMål": Lag1, "InsläpptaMål": Lag2,
-                            "Viktning": (Math.round((Math.pow((Lag1Matchvinst / (Lag1Matchvinst + Lag2Matchvinst)), 3) * Lag1Matchvinst) * 100) / 100 + (Lag1 - Lag2) * 0.001)
-                        }
-                        db.collection('playerWeek').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            // console.log('Insertade ' + spelareArr[i])
-                        })
-                    } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                        insertDB = {
-                            "vecka": vecka, "Spelare": spelareArr[i], "Vinster": Lag2Matchvinst, "Förluster": Lag1Matchvinst, "GjordaMål": Lag2, "InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst / (Lag2Matchvinst + Lag1Matchvinst)), 3) * Lag2Matchvinst) * 100) / 100 + (Lag2 - Lag1) * 0.001)
-                        }
-                        db.collection('playerWeek').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            // console.log('Insertade ' + spelareArr[i])
-                        })
-                    }
-                }
-            })
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!! MÅNADS-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            var spelareloggade = [], insertDB = {};
-            db.collection('playerMonth').find({ 'Månad': månad }).toArray(function (err, res) {
-                if (err) throw err
-                var pushArr = [];
-                for (const key in spelare) {
-                    if (spelare.hasOwnProperty(key)) {
-                        const spelarenr = spelare[key];
-                        res.forEach(spelarStat => {
-                            if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
-                                spelareloggade.push(spelarenr)
-                                var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                pushArr.push(query)
-                                db.collection('playerMonth').update({ '_id': spelarStat['_id'] }, {
-                                    $set: {
-                                        'Vinster': query.Vinster, 'Förluster': query['Förluster'],
-                                        'GjordaMål': query['GjordaMål'], 'InsläpptaMål': query['InsläpptaMål'], 'Viktning': query['Viktning']
-                                    }
-                                }, function (err, res) {
-                                    if (err) throw err
-                                })
-                            }
-                        })
-                    };
-                }
-                for (let i = 0; i < spelareArr.length; i++) {
-                    if (!spelareloggade.includes(spelareArr[i]) && i < 2) {
-                        insertDB = {
-                            'Månad': månad, "Spelare": spelareArr[i], "Vinster": Lag1Matchvinst, "Förluster": Lag2Matchvinst, "GjordaMål": Lag1, "InsläpptaMål": Lag2,
-                            "Viktning": (Math.round((Math.pow((Lag1Matchvinst / (Lag1Matchvinst + Lag2Matchvinst)), 3) * Lag1Matchvinst) * 100) / 100 + (Lag1 - Lag2) * 0.001)
-                        }
-                        db.collection('playerMonth').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                        })
-                    } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
-                        insertDB = {
-                            'Månad': månad, "Spelare": spelareArr[i], "Vinster": Lag2Matchvinst, "Förluster": Lag1Matchvinst, "GjordaMål": Lag2, "InsläpptaMål": Lag1,
-                            "Viktning": (Math.round((Math.pow((Lag2Matchvinst / (Lag2Matchvinst + Lag1Matchvinst)), 3) * Lag2Matchvinst) * 100) / 100 + (Lag2 - Lag1) * 0.001)
-                        }
-                        db.collection('playerMonth').insert(insertDB, function (err, res) {
-                            if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
-                        })
-                    }
-                }
-            })
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!! TOTAL-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -451,7 +445,6 @@ MongoClient.connect(url, (err, client) => {
                             if (Object.values(spelarStat).indexOf(spelarenr) > -1) {
                                 spelareloggade.push(spelarenr)
                                 var query = evaluate(spelare, spelarStat, req, Lag1Matchvinst, Lag2Matchvinst)
-                                // console.log(query)
                                 pushArr.push(query)
                                 db.collection('playerTotal').update({ '_id': spelarStat['_id'] }, {
                                     $set: {
@@ -460,7 +453,6 @@ MongoClient.connect(url, (err, client) => {
                                     }
                                 }, function (err, res) {
                                     if (err) throw err
-                                    // console.log('Updated: ' + res.result.nModified + ' - ' + spelarStat.Spelare)
                                 })
                             }
                         })
@@ -474,7 +466,6 @@ MongoClient.connect(url, (err, client) => {
                         }
                         db.collection('playerTotal').insert(insertDB, function (err, res) {
                             if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
                         })
                     } else if (!spelareloggade.includes(spelareArr[i]) && i >= 2) {
                         insertDB = {
@@ -483,7 +474,6 @@ MongoClient.connect(url, (err, client) => {
                         }
                         db.collection('playerTotal').insert(insertDB, function (err, res) {
                             if (err) throw err
-                            console.log('Insertade ' + spelareArr[i])
                         })
                     }
                 }
@@ -516,8 +506,6 @@ MongoClient.connect(url, (err, client) => {
                     };
                 }
             })
-
-
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!! KLART !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -611,6 +599,1262 @@ MongoClient.connect(url, (err, client) => {
 
     }
 
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Pingis Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/pingis', function (req, res) {
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+                
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+                })
+                
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                        : a.Viktning > b.Viktning ?  -1
+                        :0;                   
+            });
+            lastWeeksWinner = null;
+            
+            res.render('pingis/index.ejs', {lastWeeksWinner:lastWeeksWinner});
+            });
+        });
+    
+        app.get('/pingis/tusenklubben', function (req, res) {
+            res.render('pingis/tusenklubben.ejs');
+        });
+    
+    
+        app.get('/pingis/reglanding', function (req, res) {
+            res.render('pingis/reglanding.ejs');
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! pingis ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/pingis/admin', function (req, res) {
+            res.render('pingis/adminLanding.ejs');
+        });
+    
+        app.get("/pingis/removeGame/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+    
+            // var parameters = req.params
+    
+            db.collection("stats_pingis").deleteOne({ '_id': o_id }, function (err, data) {
+                if (err) throw err
+                res.render(__dirname + "/views/pingis/removeGameLanding.ejs")
+            });
+        });
+    
+        app.get("/pingis/leagueUpdate", (req, res) => {
+            require(__dirname + "/views/pingis/js/mongo/statsVeckaUpdate.js")
+        })
+    
+        //!History route
+        app.get('/pingis/history', function (req, res) {
+            db.collection("playerWeek").distinct('vecka', function (err, veckor) {
+                res.render('pingis/history.ejs', { veckor: JSON.stringify(veckor) });
+            })
+        });
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! data-routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/pingis/data/vecka', function (req, res) {
+            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+    
+            })
+        });
+    
+        app.get('/pingis/data/month', function (req, res) {
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        app.get('/pingis/data', function (req, res) {
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, monthData) {
+                if (err) throw err
+                db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, veckoData) {
+                    if (err) throw err
+                    var data = {}
+                    data.month = monthData
+                    data.vecka = veckoData
+                    res.json(data)
+                })
+            })
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/pingis/newPlayer', function (req, res) {
+            res.render('pingis/newPlayer.ejs');
+        });
+    
+        app.get('/pingis/newPlayerLanding', function (req, res) {
+            res.render('pingis/newPlayerLanding.ejs');
+        });
+    
+        app.post("/pingis/newPlayer", function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
+            db.collection("aktiva_pingis").insert(newPlayer, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
+            db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
+                if (err) throw err
+    
+            })
+    
+            var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
+            db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            res.redirect("/pingis/newPlayerLanding");
+        })
+    
+    
+        //! End Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Remove player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get("/pingis/remove/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_pingis").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
+                if (err) throw err
+                res.render('pingis/removePlayerLanding.ejs')
+            })
+        });
+        
+        app.get("/pingis/activate/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_pingis").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+                if (err) throw err
+                res.render('pingis/activatePlayerLanding.ejs')
+            })
+        });
+    
+        app.get('/pingis/removePlayer', function (req, res) {
+    
+            db.collection("aktiva_pingis").find({}).toArray(function (err, data) {
+                if (err) throw err
+                res.render('pingis/removePlayer.ejs', { data: data });
+            })
+        });
+    
+        app.get('/pingis/nyaslumpen', function (req, res) {
+    
+            db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('pingis/nyaslumpen.ejs', { data: data });
+            })
+        });
+            app.get('/pingis/slump', function (req, res) {
+    
+                res.render('pingis/slump.ejs')
+    
+        });
+        
+       app.get('/pingis/nyaslumpengetplayers', function (req, res) {
+    
+            db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/pingis/slumpPlayers', function (req, res) {
+            db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('pingis/slumpPlayers.ejs', { data: data });
+            })
+        })
+    
+    
+        app.get('/pingis/register', function (req, res) {
+            db.collection("aktiva_pingis").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render('pingis/register.ejs', { data: data });
+            })
+        })
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/pingis/statLanding', function (req, res) {
+            res.render('pingis/statLanding.ejs');
+        });
+        
+        app.get('/pingis/statsWeek', function (req, res) {
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection("stats_pingis").find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+            res.render('pingis/statWeek.ejs', {dataname:sorted, vecka: vecka})
+                
+            })
+            
+        })
+    
+        app.get('/pingis/historikinsamling', function(req, res) {
+            var allPlayers = [];
+    
+            db.collection("stats_pingis").find().toArray(function(err,result){
+                if(err) throw err
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+              
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+                calculateColumnOne(result, allPlayers);
+    
+                // var historicStats = calculatePlayerForHistory(result, allPlayers);
+            })
+        })
+    
+        app.get('/pingis/statsMonth', function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+            db.collection("stats_pingis").find({'Månad':månad}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+                
+            res.render('pingis/statMonth.ejs', {dataname:sorted, månad: månad})
+                
+            })
+    
+        })
+    
+        app.get('/pingis/statsVroom', function (req, res) {
+            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render("pingis/statVroom.ejs", { dataname: data })
+            })
+        })
+    
+    
+        // app.get('/pingis/statsTotal', function (req, res) {
+        //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+        //         if (err) throw err
+        //         res.render("pingis/statTotal.ejs", { dataname: data })
+        //     })
+        // })
+        
+        app.get('/pingis/statsTotal', function (req, res) {
+            if (err) throw err
+    
+            db.collection("stats_pingis").find().toArray(function(err,result){
+                
+                var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+              
+                options.forEach(option => {
+                    var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+              
+                var playerStatistics = calculatePlayer(result, allPlayers);
+    
+                var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+                res.render('pingis/statTotal.ejs', {dataname:sorted})
+            })
+        })
+      
+        app.get('/pingis/allGames', function (req, res) {
+    
+            db.collection("stats_pingis").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render("pingis/allGames.ejs", { dataname: data, moment: moment })
+            })
+        })
+    
+    
+            // CREATE - add new campground to DB
+        app.post("/pingis/resultat", function (req, res) {
+            var Lag1Matchvinst, Lag2Matchvinst;
+            var Lag1 = Number(req.body.goalTeam1)
+            var Lag2 = Number(req.body.goalTeam2)
+            if (Lag1 > Lag2) {
+                Lag1Matchvinst = 1
+                Lag2Matchvinst = 0
+            }
+            else if (Lag1 < Lag2) {
+                Lag1Matchvinst = 0
+                Lag2Matchvinst = 1
+            }
+            var datum = new Date();
+            // datum.setDate(datum.getDate() + 5);
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            // get data from the form
+            var newPost = {
+                "Tidstämpel": datum,
+                "Lag1Spelare1": req.body.player1Team1,
+                "Lag1Spelare2": req.body.player2Team1,
+                "Lag1": req.body.goalTeam1,
+                "Lag2Spelare1": req.body.player1Team2,
+                "Lag2Spelare2": req.body.player2Team2,
+                "Lag2": req.body.goalTeam2,
+                "Lag1Matchvinst": Lag1Matchvinst,
+                "Lag2Matchvinst": Lag2Matchvinst,
+                "Datum": datum,
+                "Månad": månad,
+                "Vecka": vecka
+            };
+    
+            var spelare = {
+                spelare1: req.body.player1Team1,
+                spelare2: req.body.player2Team1,
+                spelare3: req.body.player1Team2,
+                spelare4: req.body.player2Team2
+            }
+            var spelareArr = [req.body.player1Team1, req.body.player2Team1, req.body.player1Team2, req.body.player2Team2]
+    
+    
+            db.collection("stats_pingis").insert(newPost, function (err, resDB) {
+                if (err) throw err
+                res.redirect("/pingis/reglanding");
+            })
+        })
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Carlpong Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/carlpong', function (req, res) {
+            
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag2Spelare1'];
+                
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+                })
+                
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                        : a.Viktning > b.Viktning ?  -1
+                        :0;                   
+            });
+            lastWeeksWinner = null;
+            
+            res.render('carlpong/index.ejs', {lastWeeksWinner:lastWeeksWinner});
+            });
+        });
+    
+        app.get('/carlpong/tusenklubben', function (req, res) {
+            res.render('carlpong/tusenklubben.ejs');
+        });
+    
+    
+        app.get('/carlpong/reglanding', function (req, res) {
+            res.render('carlpong/reglanding.ejs');
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! carlpong ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/carlpong/admin', function (req, res) {
+            res.render('carlpong/adminLanding.ejs');
+        });
+    
+        app.get("/carlpong/removeGame/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+    
+            // var parameters = req.params
+    
+            db.collection("stats_carlpong").deleteOne({ '_id': o_id }, function (err, data) {
+                if (err) throw err
+                res.render(__dirname + "/views/carlpong/removeGameLanding.ejs")
+            });
+        });
+    
+        app.get("/carlpong/leagueUpdate", (req, res) => {
+            require(__dirname + "/views/carlpong/js/mongo/statsVeckaUpdate.js")
+        })
+    
+        //!History route
+        app.get('/carlpong/history', function (req, res) {
+            db.collection("playerWeek").distinct('vecka', function (err, veckor) {
+                res.render('carlpong/history.ejs', { veckor: JSON.stringify(veckor) });
+            })
+        });
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! data-routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/carlpong/data/vecka', function (req, res) {
+            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+    
+            })
+        });
+    
+        app.get('/carlpong/data/month', function (req, res) {
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        app.get('/carlpong/data', function (req, res) {
+            db.collection('stats_carlpong').find().sort({"Tidstämpel":1}).toArray(function(err,result){
+                res.json(result);
+            });
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/carlpong/newPlayer', function (req, res) {
+            res.render('carlpong/newPlayer.ejs');
+        });
+    
+        app.get('/carlpong/newPlayerLanding', function (req, res) {
+            res.render('carlpong/newPlayerLanding.ejs');
+        });
+    
+        app.post("/carlpong/newPlayer", function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
+            db.collection("aktiva_carlpong").insert(newPlayer, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            // var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
+            // db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+    
+            // })
+    
+            // var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
+            // db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            res.redirect("/carlpong/newPlayerLanding");
+        })
+    
+    
+        //! End Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Remove player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get("/carlpong/remove/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_carlpong").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
+                if (err) throw err
+                res.render('carlpong/removePlayerLanding.ejs')
+            })
+        });
+        
+        app.get("/carlpong/activate/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_carlpong").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+                if (err) throw err
+                res.render('carlpong/activatePlayerLanding.ejs')
+            })
+        });
+    
+        app.get('/carlpong/removePlayer', function (req, res) {
+    
+            db.collection("aktiva_carlpong").find({}).toArray(function (err, data) {
+                if (err) throw err
+                res.render('carlpong/removePlayer.ejs', { data: data });
+            })
+        });
+    
+        app.get('/carlpong/nyaslumpen', function (req, res) {
+    
+            db.collection("aktiva_carlpong").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('carlpong/nyaslumpen.ejs', { data: data });
+            })
+        });
+            app.get('/carlpong/slump', function (req, res) {
+    
+                res.render('carlpong/slump.ejs')
+    
+        });
+        
+       app.get('/carlpong/nyaslumpengetplayers', function (req, res) {
+    
+            db.collection("aktiva_carlpong").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/carlpong/slumpPlayers', function (req, res) {
+            db.collection("aktiva_carlpong").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('carlpong/slumpPlayers.ejs', { data: data });
+            })
+        })
+    
+    
+        app.get('/carlpong/register', function (req, res) {
+            db.collection("aktiva_carlpong").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render('carlpong/register.ejs', { data: data });
+            })
+        })
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/carlpong/statLanding', function (req, res) {
+            res.render('carlpong/statLanding.ejs');
+        });
+        
+        app.get('/carlpong/statsWeek', function (req, res) {
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection("stats_carlpong").find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+            res.render('carlpong/statWeek.ejs', {dataname:sorted, vecka: vecka})
+                
+            })
+            
+        })
+    
+        app.get('/carlpong/historikinsamling', function(req, res) {
+            var allPlayers = [];
+    
+            db.collection("stats_carlpong").find().toArray(function(err,result){
+                if(err) throw err
+                var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+                calculateColumnOne(result, allPlayers);
+    
+                // var historicStats = calculatePlayerForHistory(result, allPlayers);
+            })
+        })
+    
+        app.get('/carlpong/statsMonth', function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+            db.collection("stats_carlpong").find({'Månad':månad}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+                
+            res.render('carlpong/statMonth.ejs', {dataname:sorted, månad: månad})
+                
+            })
+    
+        })
+    
+        app.get('/carlpong/statsVroom', function (req, res) {
+            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render("carlpong/statVroom.ejs", { dataname: data })
+            })
+        })
+    
+    
+        // app.get('/carlpong/statsTotal', function (req, res) {
+        //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+        //         if (err) throw err
+        //         res.render("carlpong/statTotal.ejs", { dataname: data })
+        //     })
+        // })
+        
+        app.get('/carlpong/statsTotal', function (req, res) {
+            if (err) throw err
+    
+            db.collection("stats_carlpong").find().toArray(function(err,result){
+                
+                var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+                options.forEach(option => {
+                    var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+              
+                var playerStatistics = calculatePlayer(result, allPlayers);
+    
+                var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+                res.render('carlpong/statTotal.ejs', {dataname:sorted})
+            })
+        })
+      
+        app.get('/carlpong/allGames', function (req, res) {
+    
+            db.collection("stats_carlpong").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render("carlpong/allGames.ejs", { dataname: data, moment: moment })
+            })
+        })
+    
+    
+            // CREATE - add new campground to DB
+        app.post("/carlpong/resultat", function (req, res) {
+            var Lag1Matchvinst, Lag2Matchvinst;
+            var Lag1 = Number(req.body.goalTeam1)
+            var Lag2 = Number(req.body.goalTeam2)
+            if (Lag1 > Lag2) {
+                Lag1Matchvinst = 1
+                Lag2Matchvinst = 0
+            }
+            else if (Lag1 < Lag2) {
+                Lag1Matchvinst = 0
+                Lag2Matchvinst = 1
+            }
+            var datum = new Date();
+            // datum.setDate(datum.getDate() + 5);
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            // get data from the form
+            var newPost = {
+                "Tidstämpel": datum,
+                "Lag1Spelare1": req.body.player1Team1,
+                // "Lag1Spelare2": req.body.player2Team1,
+                "Lag1": req.body.goalTeam1,
+                "Lag2Spelare1": req.body.player1Team2,
+                // "Lag2Spelare2": req.body.player2Team2,
+                "Lag2": req.body.goalTeam2,
+                "Lag1Matchvinst": Lag1Matchvinst,
+                "Lag2Matchvinst": Lag2Matchvinst,
+                "Datum": datum,
+                "Månad": månad,
+                "Vecka": vecka
+            };
+    
+            var spelare = {
+                spelare1: req.body.player1Team1,
+                // spelare2: req.body.player2Team1,
+                spelare3: req.body.player1Team2,
+                // spelare4: req.body.player2Team2
+            }
+            // var spelareArr = [req.body.player1Team1, req.body.player2Team1, req.body.player1Team2, req.body.player2Team2]
+            var spelareArr = [req.body.player1Team1, req.body.player1Team2]
+    
+    
+            db.collection("stats_carlpong").insert(newPost, function (err, resDB) {
+                if (err) throw err
+                res.redirect("/carlpong/reglanding");
+            })
+        })
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Carlpong Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel', function (req, res) {
+            
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag2Spelare1'];
+                
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+                })
+                
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                return b.Viktning > a.Viktning ?  1 
+                        : a.Viktning > b.Viktning ?  -1
+                        :0;                   
+            });
+            lastWeeksWinner = null;
+            
+            res.render('padel/index.ejs', {lastWeeksWinner:lastWeeksWinner});
+            });
+        });
+    
+        app.get('/padel/tusenklubben', function (req, res) {
+            res.render('padel/tusenklubben.ejs');
+        });
+    
+    
+        app.get('/padel/reglanding', function (req, res) {
+            res.render('padel/reglanding.ejs');
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! padel ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/padel/admin', function (req, res) {
+            res.render('padel/adminLanding.ejs');
+        });
+    
+        app.get("/padel/removeGame/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+    
+            // var parameters = req.params
+    
+            db.collection("stats_padel").deleteOne({ '_id': o_id }, function (err, data) {
+                if (err) throw err
+                res.render(__dirname + "/views/padel/removeGameLanding.ejs")
+            });
+        });
+    
+        app.get("/padel/leagueUpdate", (req, res) => {
+            require(__dirname + "/views/padel/js/mongo/statsVeckaUpdate.js")
+        })
+    
+        //!History route
+        app.get('/padel/history', function (req, res) {
+            db.collection("playerWeek").distinct('vecka', function (err, veckor) {
+                res.render('padel/history.ejs', { veckor: JSON.stringify(veckor) });
+            })
+        });
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! data-routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        app.get('/padel/data/vecka', function (req, res) {
+            db.collection("playerWeek").find({}).sort({ 'vecka': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+    
+            })
+        });
+    
+        app.get('/padel/data/month', function (req, res) {
+            db.collection("playerMonth").find({}).sort({ 'Månad': -1, "Viktning": -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        app.get('/padel/data', function (req, res) {
+            db.collection('stats_padel').find().sort({"Tidstämpel":1}).toArray(function(err,result){
+                res.json(result);
+            });
+        });
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/newPlayer', function (req, res) {
+            res.render('padel/newPlayer.ejs');
+        });
+    
+        app.get('/padel/newPlayerLanding', function (req, res) {
+            res.render('padel/newPlayerLanding.ejs');
+        });
+    
+        app.post("/padel/newPlayer", function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
+            db.collection("aktiva_padel").insert(newPlayer, function (err, resDB) {
+                if (err) throw err
+            })
+    
+            // var totalPlayerAdd = { "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0, "Procent": 0, "SpeladeMatcher": 0 }
+            // db.collection("playerTotal").insert(totalPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+    
+            // })
+    
+            // var monthPlayerAdd = { "Månad": månad, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerMonth").insert(monthPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var veckoPlayerAdd = { "vecka": vecka, "Spelare": req.body.playerNamn, "Vinster": 0, "Förluster": 0, "GjordaMål": 0, "InsläpptaMål": 0, "Viktning": 0 }
+            // db.collection("playerWeek").insert(veckoPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            // var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
+            // db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            //     if (err) throw err
+            // })
+    
+            res.redirect("/padel/newPlayerLanding");
+        })
+    
+    
+        //! End Nya spelare !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! Remove player !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get("/padel/remove/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_padel").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
+                if (err) throw err
+                res.render('padel/removePlayerLanding.ejs')
+            })
+        });
+        
+        app.get("/padel/activate/:id", (req, res) => {
+            //find the campground with provided id in DB
+    
+            var o_id = new mongo.ObjectId(req.params.id)
+            db.collection("aktiva_padel").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+                if (err) throw err
+                res.render('padel/activatePlayerLanding.ejs')
+            })
+        });
+    
+        app.get('/padel/removePlayer', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/removePlayer.ejs', { data: data });
+            })
+        });
+    
+        app.get('/padel/nyaslumpen', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/nyaslumpen.ejs', { data: data });
+            })
+        });
+            app.get('/padel/slump', function (req, res) {
+    
+                res.render('padel/slump.ejs')
+    
+        });
+        
+       app.get('/padel/nyaslumpengetplayers', function (req, res) {
+    
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.json(data)
+            })
+        });
+    
+        //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/slumpPlayers', function (req, res) {
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render('padel/slumpPlayers.ejs', { data: data });
+            })
+        })
+    
+    
+        app.get('/padel/register', function (req, res) {
+            db.collection("aktiva_padel").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render('padel/register.ejs', { data: data });
+            })
+        })
+    
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //! STATS ROUTES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+        app.get('/padel/statLanding', function (req, res) {
+            res.render('padel/statLanding.ejs');
+        });
+        
+        app.get('/padel/statsWeek', function (req, res) {
+            if (err) throw err
+            var datum = new Date();
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka;
+            db.collection("stats_padel").find({'Vecka':vecka}).toArray(function(err,result){
+                
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+            res.render('padel/statWeek.ejs', {dataname:sorted, vecka: vecka})
+                
+            })
+            
+        })
+    
+        app.get('/padel/historikinsamling', function(req, res) {
+            var allPlayers = [];
+    
+            db.collection("stats_padel").find().toArray(function(err,result){
+                if(err) throw err
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+                options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+                calculateColumnOne(result, allPlayers);
+    
+                // var historicStats = calculatePlayerForHistory(result, allPlayers);
+            })
+        })
+    
+        app.get('/padel/statsMonth', function (req, res) {
+            var datum = new Date();
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+            db.collection("stats_padel").find({'Månad':månad}).toArray(function(err,result){
+                
+            var allPlayers = [];
+              var options = ['Lag1Spelare1','Lag2Spelare1'];
+              
+              options.forEach(option => {
+                var arrayEv = [...new Set(result.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                  allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+              })
+              
+            var playerStatistics = calculatePlayer(result, allPlayers);
+    
+            var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+                
+            res.render('padel/statMonth.ejs', {dataname:sorted, månad: månad})
+                
+            })
+    
+        })
+    
+        app.get('/padel/statsVroom', function (req, res) {
+            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+                if (err) throw err
+                res.render("padel/statVroom.ejs", { dataname: data })
+            })
+        })
+    
+    
+        // app.get('/padel/statsTotal', function (req, res) {
+        //     db.collection("playerTotal").find({}).sort({ 'Viktning': -1 }).toArray(function (err, data) {
+        //         if (err) throw err
+        //         res.render("padel/statTotal.ejs", { dataname: data })
+        //     })
+        // })
+        
+        app.get('/padel/statsTotal', function (req, res) {
+            if (err) throw err
+    
+            db.collection("stats_padel").find().toArray(function(err,result){
+                
+                var allPlayers = [];
+                var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1','Lag2Spelare2'];
+              
+                options.forEach(option => {
+                    var arrayEv = [...new Set(result.map(item => item[option]))];
+                    arrayEv.forEach(player => {
+                        allPlayers.includes(player)?null:allPlayers.push(player);
+                    })
+                })
+              
+                var playerStatistics = calculatePlayer(result, allPlayers);
+    
+                var sorted = playerStatistics.sort((a, b) => { 
+                    return b.Viktning > a.Viktning ?  1 
+                         : a.Viktning > b.Viktning ?  -1
+                         :0;                   
+                });
+            
+                res.render('padel/statTotal.ejs', {dataname:sorted})
+            })
+        })
+      
+        app.get('/padel/allGames', function (req, res) {
+    
+            db.collection("stats_padel").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+                if (err) throw err
+    
+                res.render("padel/allGames.ejs", { dataname: data, moment: moment })
+            })
+        })
+    
+    
+            // CREATE - add new campground to DB
+        app.post("/padel/resultat", function (req, res) {
+            var Lag1Matchvinst, Lag2Matchvinst;
+            var Lag1 = Number(req.body.goalTeam1)
+            var Lag2 = Number(req.body.goalTeam2)
+            if (Lag1 > Lag2) {
+                Lag1Matchvinst = 1
+                Lag2Matchvinst = 0
+            }
+            else if (Lag1 < Lag2) {
+                Lag1Matchvinst = 0
+                Lag2Matchvinst = 1
+            }
+            var datum = new Date();
+            // datum.setDate(datum.getDate() + 5);
+            var vecka = moment(datum, "MM-DD-YYYY").week()
+            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
+            vecka = datum.getFullYear() + ' - ' + vecka
+    
+            var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
+    
+            // get data from the form
+            var newPost = {
+                "Tidstämpel": datum,
+                "Lag1Spelare1": req.body.player1Team1,
+                "Lag1Spelare2": req.body.player2Team1,
+                "Lag1": req.body.goalTeam1,
+                "Lag2Spelare1": req.body.player1Team2,
+                "Lag2Spelare2": req.body.player2Team2,
+                "Lag2": req.body.goalTeam2,
+                "Lag1Matchvinst": Lag1Matchvinst,
+                "Lag2Matchvinst": Lag2Matchvinst,
+                "Datum": datum,
+                "Månad": månad,
+                "Vecka": vecka
+            };
+    
+            var spelare = {
+                spelare1: req.body.player1Team1,
+                // spelare2: req.body.player2Team1,
+                spelare3: req.body.player1Team2,
+                // spelare4: req.body.player2Team2
+            }
+            // var spelareArr = [req.body.player1Team1, req.body.player2Team1, req.body.player1Team2, req.body.player2Team2]
+            var spelareArr = [req.body.player1Team1, req.body.player1Team2]
+    
+    
+            db.collection("stats_padel").insert(newPost, function (err, resDB) {
+                if (err) throw err
+                res.redirect("/padel/reglanding");
+            })
+        })
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //! Starcraft-slumpen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -620,6 +1864,10 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/starcraft/register', function (req, res) {
+        db.collection('starcraft_register').find().toArray(function (err, players) {
+            if (err) throw err
+            res.render('starcraft/register.ejs', {players : players});
+        })
         res.render('starcraft/register.ejs');
     });
 
@@ -656,6 +1904,8 @@ MongoClient.connect(url, (err, client) => {
             if (err) throw err
             res.render('starcraft/register.ejs');
         })
+
+
     });
 
     app.get('/starcraft/data', function (req, res) {
@@ -731,3 +1981,49 @@ app.get('/worldoffoosball/', function (req, res) {
 });
 
 
+function calculatePlayer(matches, allPlayers){
+    
+    var allPlayersStats = [];
+    
+    allPlayers.forEach(player => {
+        var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
+        matches.forEach(match => {
+          if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
+                if (match['Lag1'] > match['Lag2']) {
+                    vinster = vinster + 1;
+                    gjordaMål = gjordaMål + Number(match['Lag1']);
+                    insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                } else if (match['Lag1'] < match['Lag2']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag1']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                }
+            }
+            else if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
+                if (match['Lag1'] < match['Lag2']) {
+                      vinster = vinster + 1;
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                } else if (match['Lag1'] > match['Lag2']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                }
+            }
+                        viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
+            procent = Math.round(vinster / (vinster + losses) * 100) / 100
+        })
+        var query = {
+              'Spelare' : player,
+              'Vinster': vinster,
+              'Förluster': losses,
+              'GjordaMål': gjordaMål,
+              'InsläpptaMål': insläpptaMål,
+              'Viktning': viktning,
+              'Procent': procent,
+              'SpeladeMatcher': (vinster + losses)
+          }
+      allPlayersStats.push(query)
+    })
+    return allPlayersStats;
+}

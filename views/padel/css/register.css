@@ -1,0 +1,25 @@
+html {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    background-image: url(../img/padel.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.register {
+    font-family: "Raleway", sans-serif;
+    margin: 0 auto;
+    margin-top: 2%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 50px;
+}
+
+hr {
+    margin: 30px 0px;
+    border: 2px solid white;
+}

@@ -1,4 +1,4 @@
-fetch('../foosball/data/month')
+fetch('../pingis/data',{credentials: 'same-origin'})
     .then(
         function (response) {
             if (response.status !== 200) {
@@ -9,8 +9,12 @@ fetch('../foosball/data/month')
             
             // Examine the text in the response
             response.json().then(function (data) {
-                var orderedData = orderMonth(data)
-                googleChart(orderedData)
+                var orderedData = {}
+                // console.log(data.month)
+                orderedData.month = orderMonth(data.month)
+                orderedData.vecka = orderVeckor(data.vecka)
+                // console.log(orderedData.month)
+                googleChart(orderedData.vecka, orderedData.month)
             });
         }
     )
@@ -18,22 +22,26 @@ fetch('../foosball/data/month')
         console.log('Fetch Error :-S', err);
     });
 
-function googleChart(apiData) {
+function googleChart(veckoData, monthData) {
     // Load Charts and the corechart package.
     google.charts.load('current', { 'packages': ['corechart'] });
-    console.log(apiData)
+
     // Draw the pie chart for Sarah's pizza when Charts is loaded.
     google.charts.setOnLoadCallback(drawChartMånad);
 
+    // Draw the pie chart for Sarah's pizza when Charts is loaded.
+    google.charts.setOnLoadCallback(drawChartVecka);
+
+
     // Callback that draws the pie chart for Sarah's pizza.
     function drawChartMånad() {
-        console.log(apiData)
+        // console.log(veckoData)
 
         // Create the data table for Sarah's pizza.
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
-        data.addRows(apiData);
+        data.addRows(monthData);
         var options = {
             backgroundColor: { fill: 'transparent' },
             is3D: true,
@@ -52,9 +60,36 @@ function googleChart(apiData) {
         chart.draw(data, options);
     }
 
+    // Callback that draws the pie chart for Sarah's pizza.
+    function drawChartVecka() {
+
+        // Create the data table for Sarah's pizza.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows(veckoData);
+        var options = {
+            backgroundColor: { fill: 'transparent' },
+            is3D: true,
+            legend: {
+                alignment: "center",
+                position: "top",
+                textStyle: {
+                    color: 'white', 
+                },
+                maxLines: 20
+            }
+        };
+
+        // Instantiate and draw the chart for Sarah's pizza.
+        var chart = new google.visualization.PieChart(document.getElementById('vecko_chart'));
+        chart.draw(data, options);
+    }
+
     $(window).resize(function(){
         drawChartMånad();
-        // drawChart2();
+        drawChartVecka();
+
       });
 }
 
@@ -79,6 +114,44 @@ function orderMonth(data) {
     }
 
     var unique = månadsvinnare.filter(onlyUnique)
+    // console.log(unique)
+    unique.forEach(namn => {
+        totalVinnare[namn] = counts[namn]
+    })
+
+
+    var sortable = [];
+    for (var vinster in totalVinnare) {
+        sortable.push([vinster, totalVinnare[vinster]]);
+    }
+    sortable.sort(function(a, b) {
+        return b[1] - a[1];
+    });
+
+    return(sortable)
+}
+
+function orderVeckor(data) {
+    var veckoLog = [], obj, veckovinnare = [], totalVinnare ={};
+    data.forEach(key => {
+        if (!veckoLog.includes(key.vecka)) {
+            veckoLog.push(key.vecka)
+        } else if (veckoLog.includes(key.vecka)) {
+        }
+    })
+    for (let i = 0; i < veckoLog.length; i++) {
+        obj = data.find(function (obj) { return obj['vecka'] === veckoLog[i] });
+        // console.log(obj.vecka + ' ' + obj.Spelare)
+        veckovinnare.push(obj.Spelare)
+    }
+    var counts = {};
+
+    for (var i = 0; i < veckovinnare.length; i++) {
+        var num = veckovinnare[i];
+        counts[num] = counts[num] ? counts[num] + 1 : 1;
+    }
+
+    var unique = veckovinnare.filter(onlyUnique)
     // console.log(unique)
     unique.forEach(namn => {
         totalVinnare[namn] = counts[namn]

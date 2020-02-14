@@ -1,6 +1,6 @@
 var races = ["Zerg", "Protoss", "Terran"];
 
-fetch('../starcraft/data')
+fetch('../starcraft/data',{credentials: 'same-origin'})
   .then(
     function (response) {
       if (response.status !== 200) {
@@ -150,7 +150,7 @@ function calculateWins(inputData) {
 
 function calculateFormLast10Games(inputData){
   var formResult = [0];
-  for (let i = 1; i < inputData.length; i++) {
+  for (let i = inputData.length-9; i < inputData.length; i++) {
     if(inputData[i].Lag1Spelare1 === "Larz" && inputData[i].Lag1Spelare2 === "Korben" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] + 1;
     else if(inputData[i].Lag1Spelare1 === "Korben" && inputData[i].Lag1Spelare2 === "Larz" && inputData[i].VinstLag1 === 1) formResult[i] = formResult[i-1] + 1;
     else if(inputData[i].Lag2Spelare1 === "Larz" && inputData[i].Lag2Spelare2 === "Korben" && inputData[i].VinstLag2 === 1) formResult[i] = formResult[i-1] + 1;
