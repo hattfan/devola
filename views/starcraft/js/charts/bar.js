@@ -88,6 +88,7 @@ fetch('../starcraft/data',{credentials: 'same-origin'})
 
 
 function pieChartCreator(playerName, raceName, playerAndRaceData){
+  console.log(playerAndRaceData);
   var labelName = `${playerName} - ${raceName} stats`;
   new Chart(document.querySelector(`#${playerName}-${raceName}`), {
     type: 'pie',

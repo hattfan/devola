@@ -31,6 +31,16 @@ if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
     }, 900000); // every 30 minutes
 } 
 
+var todayHour = new Date().getHours();
+var todayDay = new Date().getDay();
+if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
+    var http = require("http");
+    setInterval(function() {
+        http.get("http://devola.herokuapp.com");
+        console.log("Ah ah ah ah staying alive")
+    }, 1800000); // every 30 minutes
+} 
+
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
     if (err) throw err;
@@ -292,10 +302,7 @@ MongoClient.connect(url, (err, client) => {
         var datum = new Date();
 
         var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-
-        moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
         db.collection('stat').find({'Månad':månad}).toArray(function(err,result){
-            
         var allPlayers = [];
           var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -1297,7 +1304,7 @@ MongoClient.connect(url, (err, client) => {
     
             var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
     
-            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
+            // moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
             db.collection("stats_carlpong").find({'Månad':månad}).toArray(function(err,result){
                 
             var allPlayers = [];
@@ -1713,8 +1720,6 @@ MongoClient.connect(url, (err, client) => {
             var datum = new Date();
     
             var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-    
-            moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? månad = '0' + månad : null;
             db.collection("stats_padel").find({'Månad':månad}).toArray(function(err,result){
                 
             var allPlayers = [];
