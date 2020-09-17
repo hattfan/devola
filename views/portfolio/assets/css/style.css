@@ -215,11 +215,6 @@ header h2 {
 	margin: 5px;
 }
 
-.packages .courses a:hover {
-	border:1px #ccc solid;
-	background-color: #eee;
-	border-radius: 10%
-}
 
 .packages .courses .sidetext {
 	/* transform: rotateX(90deg); */
@@ -302,6 +297,10 @@ footer p {
 	}
 }
 
+.items-container{
+	display: flex;
+}
+
 /* Projects section */
 div.itemcontainer {
 	background-color: white;
@@ -313,6 +312,24 @@ div.itemcontainer {
 	text-align: justify;
 	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
 	margin: 10px;
+	margin-left: 0px;
+}
+
+div.year-container {
+	background-color: white;
+	max-width: 50px;
+	padding: 0px;
+	align-items: center;
+	border: 2px solid #ccc;
+	border-radius: 15px;
+	text-align: justify;
+	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+	margin: 10px 0px 10px;
+	font-size: 1.2rem;
+	writing-mode: vertical-rl;
+	text-orientation: upright;
+	text-align: center;
+	font-weight: bold;
 }
 
 .itemcontainer h2 {
@@ -362,6 +379,14 @@ div.item.blue {
 
 div.item.blue .link-i {
 	color: #34495e;
+}
+
+div.item.green {
+	background-color: #345e42;
+}
+
+div.item.green .link-i {
+	color: #345e42;
 }
 
 div.item.orange {
