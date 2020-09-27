@@ -405,6 +405,22 @@ div.item.red .link-i {
 	color: #e74c3c;
 }
 
+div.item.monopoly {
+	background-color: rgb(37, 131, 107);
+}
+
+div.item.monopoly .link-i {
+	color: rgb(37, 131, 107);
+}
+
+div.item.cip {
+	background-color: rgb(166,154,154);
+}
+
+div.item.cip .link-i {
+	color: rgb(166,154,154);
+}
+
 div.item.green {
 	background-color: #16a085;
 }
