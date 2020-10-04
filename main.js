@@ -77,7 +77,7 @@ MongoClient.connect(url, (err, client) => {
 
         // var parameters = req.params
 
-        db.collection("stat").deleteOne({ '_id': o_id }, function (err, data) {
+        db.collection("stat_axkid").deleteOne({ '_id': o_id }, function (err, data) {
             if (err) throw err
             res.render(__dirname + "/views/foosball/removeGameLanding.ejs")
         });
@@ -112,7 +112,7 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/foosball/data', function (req, res) {
-        db.collection('stat').find().sort({"Tidstämpel":1}).toArray(function(err,result){
+        db.collection("stat_axkid").find().sort({"Tidstämpel":1}).toArray(function(err,result){
             res.json(result);
         });
     });
@@ -138,7 +138,7 @@ MongoClient.connect(url, (err, client) => {
         vecka = datum.getFullYear() + ' - ' + vecka
 
         var newPlayer = { 'Spelare': req.body.playerNamn , 'Aktiv':true}
-        db.collection("aktiva").insert(newPlayer, function (err, resDB) {
+        db.collection("active_axkid").insert(newPlayer, function (err, resDB) {
             if (err) throw err
         })
 
@@ -177,7 +177,7 @@ MongoClient.connect(url, (err, client) => {
         //find the campground with provided id in DB
 
         var o_id = new mongo.ObjectId(req.params.id)
-        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
+        db.collection("active_axkid").update({ '_id': o_id }, {$set:{'Aktiv':false}}, function (err, data) {
             if (err) throw err
             res.render('foosball/removePlayerLanding.ejs')
         })
@@ -187,7 +187,7 @@ MongoClient.connect(url, (err, client) => {
         //find the campground with provided id in DB
 
         var o_id = new mongo.ObjectId(req.params.id)
-        db.collection("aktiva").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
+        db.collection("active_axkid").update({ '_id': o_id }, {$set:{'Aktiv':true}}, function (err, data) {
             if (err) throw err
             res.render('foosball/activatePlayerLanding.ejs')
         })
@@ -195,7 +195,7 @@ MongoClient.connect(url, (err, client) => {
 
     app.get('/foosball/removePlayer', function (req, res) {
 
-        db.collection("aktiva").find({}).toArray(function (err, data) {
+        db.collection("active_axkid").find({}).toArray(function (err, data) {
             if (err) throw err
             res.render('foosball/removePlayer.ejs', { data: data });
         })
@@ -203,7 +203,7 @@ MongoClient.connect(url, (err, client) => {
 
     app.get('/foosball/nyaslumpen', function (req, res) {
 
-        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
             res.render('foosball/nyaslumpen.ejs', { data: data });
         })
@@ -216,7 +216,7 @@ MongoClient.connect(url, (err, client) => {
     
    app.get('/foosball/nyaslumpengetplayers', function (req, res) {
 
-        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
             res.json(data)
         })
@@ -225,7 +225,7 @@ MongoClient.connect(url, (err, client) => {
     //! End remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     app.get('/foosball/slumpPlayers', function (req, res) {
-        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
             res.render('foosball/slumpPlayers.ejs', { data: data });
         })
@@ -233,7 +233,7 @@ MongoClient.connect(url, (err, client) => {
 
 
     app.get('/foosball/register', function (req, res) {
-        db.collection("aktiva").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
 
             res.render('foosball/register.ejs', { data: data });
@@ -254,7 +254,7 @@ MongoClient.connect(url, (err, client) => {
         var vecka = moment(datum, "MM-DD-YYYY").week()
         moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
         vecka = datum.getFullYear() + ' - ' + vecka;
-        db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+        db.collection("stat_axkid").find({'Vecka':vecka}).toArray(function(err,result){
             
         var allPlayers = [];
           var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
@@ -283,7 +283,7 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/historikinsamling', function(req, res) {
         var allPlayers = [];
 
-        db.collection('stat').find().toArray(function(err,result){
+        db.collection("stat_axkid").find().toArray(function(err,result){
             if(err) throw err
             var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -303,7 +303,7 @@ MongoClient.connect(url, (err, client) => {
         var datum = new Date();
 
         var månad = datum.getFullYear() + ' - ' + (datum.getMonth() + 1)
-        db.collection('stat').find({'Månad':månad}).toArray(function(err,result){
+        db.collection("stat_axkid").find({'Månad':månad}).toArray(function(err,result){
         var allPlayers = [];
           var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
           
@@ -346,7 +346,7 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/statsTotal', function (req, res) {
         if (err) throw err
 
-        db.collection('stat').find().toArray(function(err,result){
+        db.collection("stat_axkid").find().toArray(function(err,result){
             
             var allPlayers = [];
             var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
@@ -372,7 +372,7 @@ MongoClient.connect(url, (err, client) => {
   
     app.get('/foosball/allGames', function (req, res) {
 
-        db.collection("stat").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
+        db.collection("stat_axkid").find({}).sort({ 'Tidstämpel': -1 }).toArray(function (err, data) {
             if (err) throw err
 
             res.render("foosball/allGames.ejs", { dataname: data, moment: moment })
@@ -426,7 +426,7 @@ MongoClient.connect(url, (err, client) => {
         var spelareArr = [req.body.player1Team1, req.body.player2Team1, req.body.player1Team2, req.body.player2Team2]
 
 
-        db.collection("stat").insert(newPost, function (err, resDB) {
+        db.collection("stat_axkid").insert(newPost, function (err, resDB) {
             if (err) throw err
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -607,7 +607,7 @@ MongoClient.connect(url, (err, client) => {
             var vecka = moment(datum, "MM-DD-YYYY").week()
             moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
             vecka = datum.getFullYear() + ' - ' + vecka;
-            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+            db.collection("stat_axkid").find({'Vecka':vecka}).toArray(function(err,result){
                 
             var allPlayers = [];
                 var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
@@ -1030,7 +1030,7 @@ MongoClient.connect(url, (err, client) => {
             var vecka = moment(datum, "MM-DD-YYYY").week()
             moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
             vecka = datum.getFullYear() + ' - ' + vecka;
-            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+            db.collection("stat_axkid").find({'Vecka':vecka}).toArray(function(err,result){
                 
             var allPlayers = [];
                 var options = ['Lag1Spelare1','Lag2Spelare1'];
@@ -1447,7 +1447,7 @@ MongoClient.connect(url, (err, client) => {
             var vecka = moment(datum, "MM-DD-YYYY").week()
             moment(datum, "MM-DD-YYYY").week().toString().length == 1 ? vecka = '0' + vecka : null;
             vecka = datum.getFullYear() + ' - ' + vecka;
-            db.collection('stat').find({'Vecka':vecka}).toArray(function(err,result){
+            db.collection("stat_axkid").find({'Vecka':vecka}).toArray(function(err,result){
                 
             var allPlayers = [];
                 var options = ['Lag1Spelare1','Lag2Spelare1'];
