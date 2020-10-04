@@ -19,7 +19,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball"
+// var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball";
+var url = "mongodb+srv://ola:Neroxrox5(@foosball.plbsy.mongodb.net/foosball?retryWrites=true&w=majority";
 
 var todayHour = new Date().getHours();
 var todayDay = new Date().getDay();
