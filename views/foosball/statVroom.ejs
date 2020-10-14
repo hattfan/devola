@@ -3,16 +3,14 @@
     <!-- Register Page -->
     <div class="container">
         <div class="register">
-            <h1>Vroomligan</h1>
+            <h1>Glass</h1>
             <% include ./partials/buttons.ejs %>
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
                         <th>Namn</th>
-                        <th>Vroom<br>Win</th>
-                        <th>Vroom<br>Lost</th>
-                        <th>Bounty<br>Win</th>
-                        <th>Bounty<br>Lost</th>
+                        <th>Glass<br>Win</th>
+                        <th>Glass<br>Lost</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,8 +19,6 @@
                         <td><%= player.Spelare %></td>
                         <td><%= player.vroomWinCount%></td>
                         <td><%= player.vroomLostCount%></td>
-                        <td><%= player.bountyWinCount%></td>
-                        <td><%= player.bountyLostCount%></td>
                     </tr>
                     <% }) %>
                 </tbody>
