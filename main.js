@@ -552,24 +552,24 @@ MongoClient.connect(url, (err, client) => {
     function vroomEval(spelare, x, req, l1, l2) {
         var vroomWin = x['vroomWinCount'], vroomLost = x['vroomLostCount'], bountyWin = x['bountyWinCount'], bountyLost = x['bountyLostCount'];
         if (x['Spelare'] == spelare.spelare1 || x['Spelare'] == spelare.spelare2) {
-            if (l1 == 6 && l2 == 0) {
+            if (l1 == 10 && l2 == 0) {
                 vroomWin = x['vroomWinCount'] + 1;
-            } else if (l1 == 6 && l2 == 1) {
+            } else if (l1 == 10 && l2 == 1) {
                 bountyWin = x['bountyWinCount'] + 1
-            } else if (l1 == 0 && l2 == 6) {
+            } else if (l1 == 0 && l2 == 10) {
                 vroomLost = x['vroomLostCount'] + 1
-            } else if (l1 == 1 && l2 == 6) {
+            } else if (l1 == 1 && l2 == 10) {
                 bountyLost = x['bountyLostCount'] + 1
             }
         }
         else if (x['Spelare'] == spelare.spelare3 || x['Spelare'] == spelare.spelare4) {
-            if (l1 == 0 && l2 == 6) {
+            if (l1 == 0 && l2 == 10) {
                 vroomWin = x['vroomWinCount'] + 1;
-            } else if (l1 == 1 && l2 == 6) {
+            } else if (l1 == 1 && l2 == 10) {
                 bountyWin = x['bountyWinCount'] + 1
-            } else if (l1 == 6 && l2 == 0) {
+            } else if (l1 == 10 && l2 == 0) {
                 vroomLost = x['vroomLostCount'] + 1
-            } else if (l1 == 6 && l2 == 1) {
+            } else if (l1 == 10 && l2 == 1) {
                 bountyLost = x['bountyLostCount'] + 1
             }
         }
