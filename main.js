@@ -32,16 +32,6 @@ if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
     }, 900000); // every 30 minutes
 } 
 
-var todayHour = new Date().getHours();
-var todayDay = new Date().getDay();
-if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
-    var http = require("http");
-    setInterval(function() {
-        http.get("http://devola.herokuapp.com");
-        console.log("Ah ah ah ah staying alive")
-    }, 1800000); // every 30 minutes
-} 
-
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
     if (err) throw err;
@@ -53,11 +43,6 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball', function (req, res) {
         res.render('foosball/index.ejs');
     });
-
-    app.get('/foosball/tusenklubben', function (req, res) {
-        res.render('foosball/tusenklubben.ejs');
-    });
-
 
     app.get('/foosball/reglanding', function (req, res) {
         res.render('foosball/reglanding.ejs');
@@ -233,7 +218,7 @@ MongoClient.connect(url, (err, client) => {
 
 
     app.get('/foosball/register', function (req, res) {
-        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({'Aktiv':true}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
 
             res.render('foosball/register.ejs', { data: data });
@@ -382,9 +367,11 @@ MongoClient.connect(url, (err, client) => {
 
         // CREATE - add new campground to DB
     app.post("/foosball/resultat", function (req, res) {
+        
         var Lag1Matchvinst, Lag2Matchvinst;
-        var Lag1 = Number(req.body.goalTeam1)
-        var Lag2 = Number(req.body.goalTeam2)
+        var Lag1 = parseInt(req.body.goalTeam1)
+        var Lag2 = parseInt(req.body.goalTeam2)
+        console.log(Lag1, Lag2, Lag1 > Lag2);
         if (Lag1 > Lag2) {
             Lag1Matchvinst = 1
             Lag2Matchvinst = 0
@@ -406,10 +393,10 @@ MongoClient.connect(url, (err, client) => {
             "Tidstämpel": datum,
             "Lag1Spelare1": req.body.player1Team1,
             "Lag1Spelare2": req.body.player2Team1,
-            "Lag1": req.body.goalTeam1,
+            "Lag1": Lag1,
             "Lag2Spelare1": req.body.player1Team2,
             "Lag2Spelare2": req.body.player2Team2,
-            "Lag2": req.body.goalTeam2,
+            "Lag2": Lag2,
             "Lag1Matchvinst": Lag1Matchvinst,
             "Lag2Matchvinst": Lag2Matchvinst,
             "Datum": datum,
