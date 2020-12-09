@@ -9,16 +9,16 @@
                 <thead>
                     <tr>
                         <th>Namn</th>
-                        <th>Glass<br>Win</th>
-                        <th>Glass<br>Lost</th>
+                        <th>Glass<br>Vinster</th>
+                        <th>Glass<br>Torsk</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% dataname.forEach(player => { %>
                     <tr>
                         <td><%= player.Spelare %></td>
-                        <td><%= player.vroomWinCount%></td>
-                        <td><%= player.vroomLostCount%></td>
+                        <td><%= player.Vinster%></td>
+                        <td><%= player.Losses%></td>
                     </tr>
                     <% }) %>
                 </tbody>

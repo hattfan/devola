@@ -316,11 +316,17 @@ MongoClient.connect(url, (err, client) => {
     app.get('/foosball/statsVroom', function (req, res) {
         db.collection("stat_axkid").find().toArray(function (err, stats) {
             if (err) throw err
-            var vroomGames = [];
-            
-            stats.forEach(game => {
-                if(game.Lag1 == 10 && game.Lag2){}
-            });
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+                var arrayEv = [...new Set(stats.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            })
+            var data = calculateIceCreamGames(stats, allPlayers )
+            console.log(data);
             res.render("foosball/statVroom.ejs", { dataname: data })
         })
     })
@@ -2012,42 +2018,29 @@ function calculateIceCreamGames(matches, allPlayers){
     var allPlayersStats = [];
     
     allPlayers.forEach(player => {
-        var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
+        var vinster = 0, losses = 0;
         matches.forEach(match => {
-          if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
-                if (match['Lag1'] > match['Lag2']) {
+            if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
+                if (Number(match['Lag1']) === 10 && Number(match['Lag2']) === 0) {
                     vinster = vinster + 1;
-                    gjordaMål = gjordaMål + Number(match['Lag1']);
-                    insläpptaMål = insläpptaMål + Number(match['Lag2']);
-                } else if (match['Lag1'] < match['Lag2']) {
-                      losses = losses + 1;  
-                      gjordaMål = gjordaMål + Number(match['Lag1']);
-                      insläpptaMål = insläpptaMål + Number(match['Lag2']);
-                }
+                } 
+                if (Number(match['Lag2']) === 10 && Number(match['Lag1']) === 0) {
+                    losses = losses + 1;
+                } 
             }
-            else if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
-                if (match['Lag1'] < match['Lag2']) {
-                      vinster = vinster + 1;
-                      gjordaMål = gjordaMål + Number(match['Lag2']);
-                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
-                } else if (match['Lag1'] > match['Lag2']) {
-                      losses = losses + 1;  
-                      gjordaMål = gjordaMål + Number(match['Lag2']);
-                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
-                }
+            if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
+                if (Number(match['Lag2']) === 10 && Number(match['Lag1']) === 0) {
+                    vinster = vinster + 1;
+                } 
+                if (Number(match['Lag1']) === 10 && Number(match['Lag2']) === 0) {
+                    losses = losses + 1;
+                } 
             }
-                        viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
-            procent = Math.round(vinster / (vinster + losses) * 100) / 100
         })
         var query = {
               'Spelare' : player,
               'Vinster': vinster,
-              'Förluster': losses,
-              'GjordaMål': gjordaMål,
-              'InsläpptaMål': insläpptaMål,
-              'Viktning': viktning,
-              'Procent': procent,
-              'SpeladeMatcher': (vinster + losses)
+              'Losses': losses,
           }
       allPlayersStats.push(query)
     })
