@@ -314,8 +314,13 @@ MongoClient.connect(url, (err, client) => {
     })
 
     app.get('/foosball/statsVroom', function (req, res) {
-        db.collection("glass_axkid").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+        db.collection("stat_axkid").find().toArray(function (err, stats) {
             if (err) throw err
+            var vroomGames = [];
+            
+            stats.forEach(game => {
+                if(game.Lag1 == 10 && game.Lag2){}
+            });
             res.render("foosball/statVroom.ejs", { dataname: data })
         })
     })
@@ -648,9 +653,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/pingis/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/pingis/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/pingis/history', function (req, res) {
@@ -1071,9 +1073,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/carlpong/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/carlpong/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/carlpong/history', function (req, res) {
@@ -1488,9 +1487,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/padel/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/padel/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/padel/history', function (req, res) {
@@ -1965,6 +1961,53 @@ app.get('/worldoffoosball/', function (req, res) {
 
 
 function calculatePlayer(matches, allPlayers){
+    
+    var allPlayersStats = [];
+    
+    allPlayers.forEach(player => {
+        var vinster = 0, losses = 0 ,gjordaMål = 0,insläpptaMål = 0, spelade = 0, procent, viktning;
+        matches.forEach(match => {
+          if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
+                if (match['Lag1'] > match['Lag2']) {
+                    vinster = vinster + 1;
+                    gjordaMål = gjordaMål + Number(match['Lag1']);
+                    insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                } else if (match['Lag1'] < match['Lag2']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag1']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag2']);
+                }
+            }
+            else if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
+                if (match['Lag1'] < match['Lag2']) {
+                      vinster = vinster + 1;
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                } else if (match['Lag1'] > match['Lag2']) {
+                      losses = losses + 1;  
+                      gjordaMål = gjordaMål + Number(match['Lag2']);
+                      insläpptaMål = insläpptaMål + Number(match['Lag1']);
+                }
+            }
+                        viktning = (Math.round((Math.pow((vinster / (vinster + losses)), 3) * vinster) * 100) / 100 + (gjordaMål - insläpptaMål) * 0.001)
+            procent = Math.round(vinster / (vinster + losses) * 100) / 100
+        })
+        var query = {
+              'Spelare' : player,
+              'Vinster': vinster,
+              'Förluster': losses,
+              'GjordaMål': gjordaMål,
+              'InsläpptaMål': insläpptaMål,
+              'Viktning': viktning,
+              'Procent': procent,
+              'SpeladeMatcher': (vinster + losses)
+          }
+      allPlayersStats.push(query)
+    })
+    return allPlayersStats;
+}
+
+function calculateIceCreamGames(matches, allPlayers){
     
     var allPlayersStats = [];
     
