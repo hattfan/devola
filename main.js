@@ -325,8 +325,7 @@ MongoClient.connect(url, (err, client) => {
                     allPlayers.includes(player)?null:allPlayers.push(player);
                 })
             })
-            var data = calculateIceCreamGames(stats, allPlayers )
-            console.log(data);
+            var data = calculateIceCreamGames(stats, allPlayers)
             res.render("foosball/statVroom.ejs", { dataname: data })
         })
     })
