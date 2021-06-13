@@ -40,11 +40,6 @@ MongoClient.connect(url, (err, client) => {
         res.render('foosball/index.ejs');
     });
 
-    app.get('/foosball/tusenklubben', function (req, res) {
-        res.render('foosball/tusenklubben.ejs');
-    });
-
-
     app.get('/foosball/reglanding', function (req, res) {
         res.render('foosball/reglanding.ejs');
     });
@@ -145,7 +140,7 @@ MongoClient.connect(url, (err, client) => {
         })
 
         var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
-        db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+        db.collection("glass_axkid").insert(vroomPlayerAdd, function (err, resDB) {
             if (err) throw err
         })
 
@@ -219,7 +214,7 @@ MongoClient.connect(url, (err, client) => {
 
 
     app.get('/foosball/register', function (req, res) {
-        db.collection("active_axkid").find({}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
+        db.collection("active_axkid").find({'Aktiv':true}).sort({ 'Spelare': 1 }).toArray(function (err, data) {
             if (err) throw err
 
             res.render('foosball/register.ejs', { data: data });
@@ -315,8 +310,18 @@ MongoClient.connect(url, (err, client) => {
     })
 
     app.get('/foosball/statsVroom', function (req, res) {
-        db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+        db.collection("stat_axkid").find().toArray(function (err, stats) {
             if (err) throw err
+            var allPlayers = [];
+            var options = ['Lag1Spelare1','Lag1Spelare2','Lag2Spelare1', 'Lag2Spelare2'];
+          
+            options.forEach(option => {
+                var arrayEv = [...new Set(stats.map(item => item[option]))];
+                arrayEv.forEach(player => {
+                    allPlayers.includes(player)?null:allPlayers.push(player);
+                })
+            })
+            var data = calculateIceCreamGames(stats, allPlayers)
             res.render("foosball/statVroom.ejs", { dataname: data })
         })
     })
@@ -368,9 +373,11 @@ MongoClient.connect(url, (err, client) => {
 
         // CREATE - add new campground to DB
     app.post("/foosball/resultat", function (req, res) {
+        
         var Lag1Matchvinst, Lag2Matchvinst;
-        var Lag1 = Number(req.body.goalTeam1)
-        var Lag2 = Number(req.body.goalTeam2)
+        var Lag1 = parseInt(req.body.goalTeam1)
+        var Lag2 = parseInt(req.body.goalTeam2)
+        console.log(Lag1, Lag2, Lag1 > Lag2);
         if (Lag1 > Lag2) {
             Lag1Matchvinst = 1
             Lag2Matchvinst = 0
@@ -392,10 +399,10 @@ MongoClient.connect(url, (err, client) => {
             "Tidstämpel": datum,
             "Lag1Spelare1": req.body.player1Team1,
             "Lag1Spelare2": req.body.player2Team1,
-            "Lag1": req.body.goalTeam1,
+            "Lag1": Lag1,
             "Lag2Spelare1": req.body.player1Team2,
             "Lag2Spelare2": req.body.player2Team2,
-            "Lag2": req.body.goalTeam2,
+            "Lag2": Lag2,
             "Lag1Matchvinst": Lag1Matchvinst,
             "Lag2Matchvinst": Lag2Matchvinst,
             "Datum": datum,
@@ -467,7 +474,7 @@ MongoClient.connect(url, (err, client) => {
             //!! VROOM-INSERT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             vroomlogg = {}, vromTot = [];
-            db.collection('playerVroomBounty').find().toArray(function (err, res) {
+            db.collection('glass_axkid').find().toArray(function (err, res) {
                 if (err) throw err
                 for (const key in spelare) {
                     if (spelare.hasOwnProperty(key)) {
@@ -477,7 +484,7 @@ MongoClient.connect(url, (err, client) => {
                                 spelareloggade.push(spelarenr)
                                 var query = vroomEval(spelare, spelarStat, req, Lag1, Lag2)
 
-                                db.collection('playerVroomBounty').update({ '_id': spelarStat['_id'] }, {
+                                db.collection('glass_axkid').update({ '_id': spelarStat['_id'] }, {
                                     $set: {
                                         'vroomWinCount': query.vroomWinCount, 'vroomLostCount': query.vroomLostCount,
                                         'bountyWinCount': query.bountyWinCount, 'bountyLostCount': query.bountyLostCount
@@ -551,24 +558,24 @@ MongoClient.connect(url, (err, client) => {
     function vroomEval(spelare, x, req, l1, l2) {
         var vroomWin = x['vroomWinCount'], vroomLost = x['vroomLostCount'], bountyWin = x['bountyWinCount'], bountyLost = x['bountyLostCount'];
         if (x['Spelare'] == spelare.spelare1 || x['Spelare'] == spelare.spelare2) {
-            if (l1 == 6 && l2 == 0) {
+            if (l1 == 10 && l2 == 0) {
                 vroomWin = x['vroomWinCount'] + 1;
-            } else if (l1 == 6 && l2 == 1) {
+            } else if (l1 == 10 && l2 == 1) {
                 bountyWin = x['bountyWinCount'] + 1
-            } else if (l1 == 0 && l2 == 6) {
+            } else if (l1 == 0 && l2 == 10) {
                 vroomLost = x['vroomLostCount'] + 1
-            } else if (l1 == 1 && l2 == 6) {
+            } else if (l1 == 1 && l2 == 10) {
                 bountyLost = x['bountyLostCount'] + 1
             }
         }
         else if (x['Spelare'] == spelare.spelare3 || x['Spelare'] == spelare.spelare4) {
-            if (l1 == 0 && l2 == 6) {
+            if (l1 == 0 && l2 == 10) {
                 vroomWin = x['vroomWinCount'] + 1;
-            } else if (l1 == 1 && l2 == 6) {
+            } else if (l1 == 1 && l2 == 10) {
                 bountyWin = x['bountyWinCount'] + 1
-            } else if (l1 == 6 && l2 == 0) {
+            } else if (l1 == 10 && l2 == 0) {
                 vroomLost = x['vroomLostCount'] + 1
-            } else if (l1 == 6 && l2 == 1) {
+            } else if (l1 == 10 && l2 == 1) {
                 bountyLost = x['bountyLostCount'] + 1
             }
         }
@@ -647,9 +654,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/pingis/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/pingis/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/pingis/history', function (req, res) {
@@ -730,7 +734,7 @@ MongoClient.connect(url, (err, client) => {
             })
     
             var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
-            db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            db.collection("glass_axkid").insert(vroomPlayerAdd, function (err, resDB) {
                 if (err) throw err
             })
     
@@ -903,7 +907,7 @@ MongoClient.connect(url, (err, client) => {
         })
     
         app.get('/pingis/statsVroom', function (req, res) {
-            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+            db.collection("glass_axkid").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
                 if (err) throw err
                 res.render("pingis/statVroom.ejs", { dataname: data })
             })
@@ -1070,9 +1074,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/carlpong/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/carlpong/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/carlpong/history', function (req, res) {
@@ -1146,7 +1147,7 @@ MongoClient.connect(url, (err, client) => {
             // })
     
             // var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
-            // db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            // db.collection("glass_axkid").insert(vroomPlayerAdd, function (err, resDB) {
             //     if (err) throw err
             // })
     
@@ -1319,7 +1320,7 @@ MongoClient.connect(url, (err, client) => {
         })
     
         app.get('/carlpong/statsVroom', function (req, res) {
-            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+            db.collection("glass_axkid").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
                 if (err) throw err
                 res.render("carlpong/statVroom.ejs", { dataname: data })
             })
@@ -1487,9 +1488,6 @@ MongoClient.connect(url, (err, client) => {
             });
         });
     
-        app.get("/padel/leagueUpdate", (req, res) => {
-            require(__dirname + "/views/padel/js/mongo/statsVeckaUpdate.js")
-        })
     
         //!History route
         app.get('/padel/history', function (req, res) {
@@ -1563,7 +1561,7 @@ MongoClient.connect(url, (err, client) => {
             // })
     
             // var vroomPlayerAdd = { "Spelare": req.body.playerNamn, "vroomWinCount": 0, "vroomLostCount": 0, "bountyWinCount": 0, "bountyLostCount": 0 }
-            // db.collection("playerVroomBounty").insert(vroomPlayerAdd, function (err, resDB) {
+            // db.collection("glass_axkid").insert(vroomPlayerAdd, function (err, resDB) {
             //     if (err) throw err
             // })
     
@@ -1734,7 +1732,7 @@ MongoClient.connect(url, (err, client) => {
         })
     
         app.get('/padel/statsVroom', function (req, res) {
-            db.collection("playerVroomBounty").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
+            db.collection("glass_axkid").find().sort({ 'vroomWinCount': -1 }).toArray(function (err, data) {
                 if (err) throw err
                 res.render("padel/statVroom.ejs", { dataname: data })
             })
@@ -2004,6 +2002,40 @@ function calculatePlayer(matches, allPlayers){
               'Viktning': viktning,
               'Procent': procent,
               'SpeladeMatcher': (vinster + losses)
+          }
+      allPlayersStats.push(query)
+    })
+    return allPlayersStats;
+}
+
+function calculateIceCreamGames(matches, allPlayers){
+    
+    var allPlayersStats = [];
+    
+    allPlayers.forEach(player => {
+        var vinster = 0, losses = 0;
+        matches.forEach(match => {
+            if (match['Lag1Spelare1'] == player || match['Lag1Spelare2'] == player) {
+                if (Number(match['Lag1']) === 10 && Number(match['Lag2']) === 0) {
+                    vinster = vinster + 1;
+                } 
+                if (Number(match['Lag2']) === 10 && Number(match['Lag1']) === 0) {
+                    losses = losses + 1;
+                } 
+            }
+            if (match['Lag2Spelare1'] == player || match['Lag2Spelare2'] == player) {
+                if (Number(match['Lag2']) === 10 && Number(match['Lag1']) === 0) {
+                    vinster = vinster + 1;
+                } 
+                if (Number(match['Lag1']) === 10 && Number(match['Lag2']) === 0) {
+                    losses = losses + 1;
+                } 
+            }
+        })
+        var query = {
+              'Spelare' : player,
+              'Vinster': vinster,
+              'Losses': losses,
           }
       allPlayersStats.push(query)
     })
