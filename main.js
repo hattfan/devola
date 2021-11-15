@@ -19,18 +19,14 @@ app.use(function (req, res, next) {
     next();
 });
 
-// var url = "mongodb://normal:xsR2w4PabHdwNhV@ds121861.mlab.com:21861/foosball";
 var url = "mongodb+srv://ola:Neroxrox5(@foosball.plbsy.mongodb.net/foosball?retryWrites=true&w=majority";
 
 var todayHour = new Date().getHours();
 var todayDay = new Date().getDay();
-if ((todayHour >= 7 && todayHour <= 20) && (todayDay < 5)) {
-    var http = require("http");
-    setInterval(function() {
-        http.get("http://devola.herokuapp.com");
-        console.log("Ah ah ah ah staying alive")
-    }, 900000); // every 30 minutes
-} 
+
+app.get('/alive', function(req,res){
+    res.send('stayin alive')
+})
 
 MongoClient.connect(url, (err, client) => {
     var db = client.db('foosball');
@@ -1844,7 +1840,7 @@ MongoClient.connect(url, (err, client) => {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     app.get('/starcraft/', function (req, res) {
-        res.render('starcraft/stats.ejs');
+        res.render('starcraft/slump.ejs');
     });
 
     app.get('/starcraft/register', function (req, res) {
