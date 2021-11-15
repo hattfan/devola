@@ -1840,7 +1840,7 @@ MongoClient.connect(url, (err, client) => {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     app.get('/starcraft/', function (req, res) {
-        res.render('starcraft/slump.ejs');
+        res.redirect('starcraft/register.ejs');
     });
 
     app.get('/starcraft/register', function (req, res) {
