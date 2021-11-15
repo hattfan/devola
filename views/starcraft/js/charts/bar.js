@@ -111,7 +111,7 @@ function pieChartCreator(playerName, raceName, playerAndRaceData){
 
 // Helper functions
 function evaluateStatistics(statistics, player, race ){
-  var playerOptions = ["Lag1Spelare1","Lag1Spelare2","Lag2Spelare1","Lag2Spelare2"];
+  var playerOptions = ["Lag1Spelare1","Lag1Spelare2",,"Lag1Spelare3","Lag2Spelare1","Lag2Spelare2","Lag2Spelare3"];
   var winCount = 0, looseCount = 0;
   statistics.forEach(row => {
     if(row.Lag1Spelare1 === player && row.Lag1Spelare1Ras === race  && row.VinstLag1 === 1) winCount += 1;

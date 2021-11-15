@@ -1848,15 +1848,17 @@ MongoClient.connect(url, (err, client) => {
     });
 
     app.get('/starcraft/register', function (req, res) {
-        db.collection('starcraft_register').find().toArray(function (err, players) {
+        db.collection('starcraft_players').find().toArray(function (err, players) {
             if (err) throw err
             res.render('starcraft/register.ejs', {players : players});
         })
-        res.render('starcraft/register.ejs');
     });
 
     app.get('/starcraft/stats', function (req, res) {
-        res.render('starcraft/stats.ejs');
+        db.collection('starcraft_register').find().toArray(function (err, data) {
+            if (err) throw err
+            res.render('starcraft/stats.ejs', {data : data});
+        })
     });
 
     app.get('/starcraft/slump', function (req, res) {
@@ -1871,10 +1873,15 @@ MongoClient.connect(url, (err, client) => {
             "Lag1Spelare1Ras": req.body.player1Team1race,
             "Lag1Spelare2": req.body.player2Team1,
             "Lag1Spelare2Ras": req.body.player2Team1race,
+            "Lag1Spelare3": req.body.player3Team1,
+            "Lag1Spelare3Ras": req.body.player3Team1race,
             "Lag2Spelare1": req.body.player1Team2,
             "Lag2Spelare1Ras": req.body.player1Team2race,
             "Lag2Spelare2": req.body.player2Team2,
             "Lag2Spelare2Ras": req.body.player2Team2race,
+            "Lag2Spelare3": req.body.player3Team2,
+            "Lag2Spelare3Ras": req.body.player3Team2race,
+
         };
 
         if (req.body.optradio === "team1Win") {
@@ -1884,18 +1891,15 @@ MongoClient.connect(url, (err, client) => {
             newPost["VinstLag1"] = 0, newPost["VinstLag2"] = 1;
         }
 
-        db.collection('starcraft_register').insertOne(newPost, function (err, result) {
-            if (err) throw err
-            res.render('starcraft/register.ejs');
-        })
-
-
-    });
-
-    app.get('/starcraft/data', function (req, res) {
-        db.collection("starcraft_register").find("").toArray(function(err, data){
-            res.json(data);
-        })
+        db.collection('starcraft_register').insertOne(newPost, function (error, response) {
+            if(error) {
+                console.log('Error occurred while inserting');
+                // return 
+            } else {
+                res.redirect("/starcraft/stats")
+              // return 
+            }
+        });
     });
 })
 
