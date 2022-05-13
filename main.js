@@ -7,6 +7,7 @@ var express = require("express"),
     MongoClient = require('mongodb').MongoClient;
 
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(__dirname + '/views'));
@@ -26,6 +27,11 @@ var todayDay = new Date().getDay();
 
 app.get('/alive', function(req,res){
     res.send('stayin alive')
+})
+
+app.post('/plc', function(req,res){
+    // res.send(req.url)
+    res.sendStatus(200);
 })
 
 MongoClient.connect(url, (err, client) => {
