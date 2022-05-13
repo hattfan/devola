@@ -41,7 +41,10 @@ MongoClient.connect(url, (err, client) => {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //! Foosball Landing routes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+    app.get('/test', function (req, res) {
+        res.send('test');
+    });
+    
     app.get('/foosball', function (req, res) {
         res.render('foosball/index.ejs');
     });
