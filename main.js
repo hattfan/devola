@@ -4,6 +4,7 @@ var express = require("express"),
     methodOverride = require("method-override"),
     moment = require('moment'),
     mongo = require('mongodb'),
+    url_parser = require('url');
     MongoClient = require('mongodb').MongoClient;
 
 
@@ -30,8 +31,8 @@ app.get('/alive', function(req,res){
 })
 
 app.post('/plc', function(req,res){
-    // res.send(req.url)
-    res.sendStatus(200);
+    const queryObject = url_parser.parse(req.url, true).query;
+    res.send(queryObject);
 })
 
 MongoClient.connect(url, (err, client) => {
