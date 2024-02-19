@@ -413,6 +413,14 @@ div.item.red .link-i {
 	color: #e74c3c;
 }
 
+div.item.solas {
+	background-color: #921102;
+}
+
+div.item.solas .link-i {
+	color: #921102;
+}
+
 div.item.monopoly {
 	background-color: rgb(37, 131, 107);
 }
@@ -584,7 +592,7 @@ hr.divider {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
-	
+	max-height: 45px;
 }
 
 .dates {
