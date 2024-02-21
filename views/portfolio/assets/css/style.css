@@ -128,6 +128,31 @@ header h2 {
 	}
 }
 
+.project-title {
+	font-size: 20px	;
+	font-family: "PT Sans", sans-serif;
+	color: #1c8d21;
+	cursor: pointer;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.not-updated {
+	color: rgb(246, 103, 103);
+}
+
+
+@media (max-width: 800px) {
+	.project-title {
+		padding: 20px 50px;
+		flex-direction: column;
+	}
+	.project-title a {
+		margin-bottom: 15px;
+	}
+}
+
+
 /*Hero Styles*/
 
 .hero {
