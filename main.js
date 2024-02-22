@@ -515,7 +515,7 @@ app.post('/plc', function(req,res){
 // //         })
 // //     })
 
-var port = process.env.PORT || 3030;
+var port = process.env.PORT || 3000;
 
 app.listen(port, process.env.IP, function () {
     var appConsoleMsg = 'Hemsidan startad: ';
