@@ -1,0 +1,50 @@
+<% include ./partials/cssLinks %>
+  <%include ./partials/header %>
+    <link href="css/full-slider.css" rel="stylesheet">
+    <link href="css/slider.css" rel="stylesheet">
+    <link href="css/news.css" rel="stylesheet">
+    <link href="css/contact2.css" rel="stylesheet">
+
+
+    <div id="fb-root"></div>
+    <script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&appId=1800021533639368&autoLogAppEvents=1';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+
+
+    <section id="news">
+      <div class="container">
+        <div class="text-center">
+          <h1 class="text-uppercase">
+            <!-- <strong><i class="fa fa-diamond fa-3x mb-3 sr-contact"></i>BrandEye</strong> -->
+            <strong>
+              <i class="fa fa-newspaper mb-3 sr-contact"></i> Nyheter</strong>
+          </h1>
+          <hr>
+        </div>
+        <div class="row content" style="text-align: center">
+          <div class="fb-page" data-href="https://www.facebook.com/BrandEye-Sales-Partner-160590144787742/" data-tabs="timeline" data-height="600"
+            data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="true">
+            <blockquote cite="https://www.facebook.com/BrandEye-Sales-Partner-160590144787742/" class="fb-xfbml-parse-ignore">
+              <a href="https://www.facebook.com/BrandEye-Sales-Partner-160590144787742/">BrandEye Sales&amp;Partner</a>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/creative.min.js"></script>
+
+    <% include ./partials/footer %>

@@ -1,0 +1,17 @@
+<% if (messages.success) { %>
+    <div class="alert alert-success fade show">
+        <button class="close" type="button" data-dismiss='alert'><i class="fas fa-times-circle"></i></button>
+        <% messages.success.forEach(success => { %>
+         <div><%= success.msg %></div>
+        <% }) %>
+    </div>
+<% } %>
+<% if (messages.errors
+) { %>
+  <div class="alert alert-danger fade show">
+      <button class="close" type="button" data-dismiss='alert'><i class="fas fa-times-circle"></i></button>
+      <% messages.errors.forEach(error => { %>
+       <div><%= error.msg %></div>
+      <% }) %>
+  </div>
+<% } %>

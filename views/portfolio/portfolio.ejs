@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Olas portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="assets/img/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+        integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/font-mfizz-2.4.1/font-mfizz.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
+    <link rel="stylesheet" href="assets/css/projects.css">
+
+</head>
+
+<body>
+
+    <div class="topnav">
+        <div class="container">
+            <a href="#hero">
+                <i class="far fa-paper-plane"></i> Ola Karlsson</a>
+            <div class="rightside">
+                <a href="#cv">
+                    <i class="far fa-newspaper"></i> CV
+                </a>
+                <a href="#projects">
+                    <i class="fas fa-briefcase"></i> Programmering
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <section id="hero" class="hero">
+        <div class="background-image" style="background-image: url(assets/img/background2.jpg);" )></div>
+        <div class="hero-content-area">
+            <img src="./assets/img/ola_karlsson.png" />
+            <h1>Ola Karlsson</h1>
+            <br>
+            <div class="btns">
+                <a href="mailto:ola.anders.karlsson@gmail.com" class="btn">
+                    <i class="far fa-envelope"></i> Mail</a>
+                <a href="tel:+46756770429" class="btn">
+                    <i class="fas fa-phone"></i> +46765770429</a>
+            </div>
+        </div>
+    </section>
+
+    <section id='cv' class="cv">
+        <h3 class="title">CV</h3>
+        <hr>
+        <h3 class="attached">
+            <i class="fas fa-briefcase"></i> Arbetslivserfarenhet</h3>
+        <main>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/minesto.png" style="width: 400px" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2022/02</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Mjukvaruutvecklare -
+                        <br class="br-on-mobile"> Minesto</h3>
+                    <p>Minesto utvecklar kraftverk (kiter) för generering av el med hjälp av tidvattenflöde. På Minesto arbetar jag som kontrollsystemingenjör 
+                        men mjukvaruingenjören passar mer in i beskrivningen av vad jag gör. Jag arbetar delat med utveckling av 
+                        mjukvara samt med dataanalys. Teknikmässigt jobbar jag med Python för backend-utveckling och dataanalys samt React för 
+                        frontend-utveckling. <br>Mina arbetsuppgifter är att:
+                        <ul>
+                            <li>Utveckla backend i Python för hantering av dataöverföring och rapportskapande</li>
+                            <li>Skapa och utveckla analysverktyg för analys av kitebeteende</li>
+                            <li>Analysera tidvattenflyg och flygbeteende med hjälp av de ovan nämnda verktygen</li>
+                            <li>Utveckla webbapplikation i React/Python(Django) för planering av jourhavande och larm-hantering</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/nordicport.png" style="width: 400px" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2019/08 - 2022/02</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>.Net-utvecklare -
+                        <br class="br-on-mobile"> Nordic Port</h3>
+                    <p>Nordic Port tillhandahåller systemstöd för uppföljning av kollektivtrafik. Jag jobbar som
+                        fullstack-utvecklare i .Net och
+                        jag programmerar således i HTML/Javascript för frontend, c# i backend samt i SQL på serversidan
+                        i ett agilt arbetssätt enligt Scrum och Kanban.
+                        <br>Utvecklingsmässigt har jag jobbat med:
+                        <ul>
+                            <li>Underhåll och buggfixande av legacy-kod</li>
+                            <li>Nyutveckling av ny modul</li>
+                            <li>Sätta upp tester i SOAP UI för tidigare otestad kod</li>
+                            <li>Förstudier för omskrivning av legacy-kod</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/carlsberg.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2016/04 - 2019/08</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Falkenberg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Processutvecklare -
+                        <br class="br-on-mobile"> Carlsberg</h3>
+                    <p>Processutvecklare i ledningsgruppen för processutveckling på Carlsberg. Jobbet som
+                        processutvecklare innebär att tillsammans med processledningen och operatörer hitta och
+                        genomföra förbättringar. Jag har bland annat utvecklat program i Excel VBA för att förbättra
+                        ölkvalitén. I rollen har jag även fått agera projektledare över mindre projekt som exempelvis
+                        nya maskininstallationer. Jag har även varit vikarierande produktionsplanerare. </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/storaenso.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2015/08 - 2016/04</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Supply Chain Specialist -
+                        <br class="br-on-mobile"> Stora Enso Trainee program</h3>
+                    <p>Som Supply Chain Specialist genomförde jag analyser av de komplexa värdekedjorna i Stora Ensos
+                        värdeflöden. Analyserna baseras på det interna ERP-systemet tillsammans med Microsoft Excel. Jag
+                        fick från starten ta ansvar för kostnadseffektiviseringsprojekt och för resultatet av dessa.
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/carlsberg.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2012/04 - 2014/08</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Falkenberg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Maskinoperatör -
+                        <br class="br-on-mobile"> Carlsberg</h3>
+                    <p>Maskinoperatör under tre somrar på Carlsberg i Falkenberg inom öltappningen. Carlsberg jobbar
+                        enligt Lean Production vilket var väldigt intressant med tanke på mitt kandidatarbete inom Lean
+                        Production (se nedan). Utöver ordinarie arbetsuppgifter fick jag möjlighet att arbeta fram
+                        förbättringar i nuvarande arbetssätt.
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/komplett.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2013/10 - 2014/02</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Sandefjord, Norge</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Lagermedarbetare -
+                        <br class="br-on-mobile"> Komplett AS </h3>
+                    <p>Lagermedarbetare på Komplett. Jag jobbade på varumottagningen under högsäsongen. Några av
+                        arbetsuppgifterna var inrapportering av varor i SAP och utkörning av varor med låglyftande truck
+                        eller skjutstativtruck.
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/myacademy.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2013/01 - 2013/06</p>
+                    <p class="place">
+                        <i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>My Academy -
+                        <br class="br-on-mobile"> Privatlärare</h3>
+                    <p>Privatlärare i matematik för My Academy. Under vårterminen höll jag privatlektioner i matematik C
+                        på gymnasienivå. Tillsammans med en elev jobbade vi upp hennes betyg från underkänt till godkänt
+                        med god marginal.
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/anticimex.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2009/05 - 2012/09</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Specialtekniker -
+                        <br class="br-on-mobile"> Anticimex</h3>
+                    <p>
+                        Specialtekniker under somrarna på Anticimex. Jag jobbade på Anticimex specialavdelning med
+                        främsta fokus på fåglar. Jag fick tidigt in i anställningen ta ansvar för en del av 
+                        arbetet som tillhörde sommarsäsongen.
+                        Detinkluderade ansvar för personal och planering av arbetet.
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <h3 class="attached">
+            <i class="fas fa-graduation-cap"></i> Utbildning</h3>
+        <main>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/chalmers.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2012/08-2015/05</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Masterutbildning -
+                        <br class="br-on-mobile"> Chalmers Tekniska Högskola</h3>
+                    <p>
+                        Masterutbildning - Quality and Operations Management, Industriell Ekonomi 120 hp
+                        <br> GPA 4,8/5
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/chalmers.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2008/08-2012/05</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Civilingenjörsutbildning -
+                        <br class="br-on-mobile"> Chalmers Tekniska Högskola</h3>
+                    <p>
+                        Kandidatnivå - Maskinteknik 180 hp
+                        <br> GPA 4,2/5
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/chalmers.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2013/01-2013/06</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Chalmers Tekniska Högskola</h3>
+                    <p>
+                        Six Sigma Black Belt Certification, 15 hp
+
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/handels.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2007/06-2008/01</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Handelshögskolan</h3>
+                    <p>
+                        Företagsekonomi A 30hp
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <h3 class="attached">
+            <i class="fas fa-paperclip"></i> Arbeten</h3>
+        <main>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/chalmers.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2015</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Exjobb Industrialisering -
+                        <br class="br-on-mobile"> Chalmers Tekniska Högskola</h3>
+                    <p>
+                        Exjobb angående industrialiseringsprocessen på SAAB. Hur samarbetet mellan konstruktörer och
+                        produktion kan förbättras, främst
+                        fokuserat på hur kunskapsutbytet uppströms kan förbättras.
+                    </p>
+                </div>
+            </div>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/chalmers.png" alt="">
+            </div>
+            <div class="flex-grid">
+                <div class="cv-left-align">
+                    <p class="dates">2012</p>
+                    <p class="place"><i class="fas fa-map-marker-alt"></i> Göteborg</p>
+                </div>
+                <div class="cv-main-align">
+                    <h3>Kandidatarbete -
+                        <br class="br-on-mobile"> Ledarskap inom Lean Production
+                        <br class="br-on-mobile">
+                    </h3>
+                    <p>
+                        Kandidatarbetet baserades på lyckade implementeringar av Lean i svenska företag. 
+                        Resultatetutmynnade i en normativ modell som skall agera som en ledning för svenska 
+                        företag som skall eller vill arbeta med Lean Production.
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <h3 class="attached">
+            <i class="fab fa-angellist"></i> Övrigt</h3>
+        <main>
+            <div class="work-title" style="text-align: center">
+                <h2>Hackefors</h2>
+            </div>
+
+            <p style="padding: 10px">
+                Under 2019 byggde vi en bönskördningsmaskin med <a href="http://hackefors.herokuapp.com/"
+                    style="color:darkgreen"> Hackefors
+                </a> tillsammans med Uråsa Bönodling. Jag skötte framförallt design och konstruktion men även viss del
+                av programmering av motorer.
+            </p>
+
+            <div class="work-title" style="text-align: center">
+                <h2>IBDK Sweden</h2>
+            </div>
+
+            <p style="padding: 10px">
+                Under 2015 har jag tillsammans med Ingenjörsbyrån DK, en tvärvetenskaplig ingenjörsgrupp vunnit
+                innovationstävlingen
+                <a href="http://www.sust.se/vatten" style="color:darkgreen"> Innovativ Vattenmätning
+                </a> där jag var ledande i arbetet med konceptet Wattometern och skrev även det vinnande
+                tävlingsbidraget
+                <a href="http://www.ibdk.se/" style="color: darkgreen">Wattometern</a> . Med Wattometern är tanken att
+                mäta varmvattenflöde med hjälp av temperaturskillnad för
+                att kunna minska vattenåtgången i lägenhetsbostäder.
+            </p>
+            <div class="work-title">
+                <img src="./assets/img/jobblogo/cas-logo.png" alt="">
+            </div>
+
+            <p style="padding: 10px">
+                Under 2015 har jag tillsammans med Ingenjörsbyrån DK, en tvärvetenskaplig ingenjörsgrupp vunnit
+                innovationstävlingen Jag
+                har under 2011-2015 varit styrelsemedlem i Chalmers Alternative Sports (CAS) en studentförening på
+                Chalmers
+                som bland annat anordnar resor för våra medlemmar. Under 2012-2013 var jag ordförande. Som ordförande
+                för
+                CAS var jag projektledare för
+                <a href="https://vimeo.com/85026602" style="color: darkgreen">Chalmers Wake A-Pond </a> där jag hade
+                och utvecklade den ursprungliga idén.</p>
+
+            <div class="work-title" style="text-align: center">
+                <h2>
+                    <i class="fas fa-trophy"></i> Innebandy</h2>
+            </div>
+
+            <p style="padding: 10px">
+                Under 06-07 spelade jag innebandy för Fjerdingby innebandyklubb i Lilleström vilket slutade med
+                serievinst samt mitt och
+                Fjerdingbys första guld i Norska Mästerskapen. I Fjerdingby var jag även spelande tränare för
+                juniorlaget.
+                Utöver studier 2008-2012 har jag spelat som halvprofessionell innebandyspelare i Älvstranden/FBC
+                Göteborg/Partille
+                IBS i division 1 samt i allsvenskan.</p>
+        </main>
+    </section>
+
+    <section id="projects" class="projects">
+        <h3 class="title">Programmering</h3>
+        <hr>
+
+        <div class="items-container">
+            <div class="year-container">
+                2023
+            </div>
+            <div class="itemcontainer">
+                <div class="item solas" class="modalTrigger">
+                    <img src="assets/img/solas.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee">
+                        </i>
+                    </h2>
+                    <!-- <a href="https://slimmarn.herokuapp.com" target="_blank"> -->
+                    <a onclick="alert('Updates before 2024-02-23')">
+                        <i class="fas fa-clock link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-python mfizz"></i>
+                        <i class="icon-reactjs mfizz"></i>
+                        sOlas
+                    </a>
+                    <p>sOlas är ett system för planering av övervakningsresurser för larm-hantering. sOlas har olika lager av användare
+                        där admin-användare bokar in ingenjörer och chefer i olika eskaleringsnivåer. PLC-logik kopplas ihop med webbserver för
+                        att larm ska komma till rätt användare och eskaleras vid behov.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2021
+            </div>
+            <div class="itemcontainer">
+                <div class="item red" class="modalTrigger">
+                    <img src="assets/img/slimmarn.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee">
+                        </i>
+                    </h2>
+                    <!-- <a href="https://slimmarn.herokuapp.com" target="_blank"> -->
+                    <a onclick="alert('Updates before 2024-02-23')">
+                        <i class="fas fa-dumbbell link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-mongodb mfizz"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Slimmarn
+                    </a>
+                    <p>Med Slimmarn så randomiseras ett nytt träningspass varje dag och mailas ut till användarna. Användarna postar sina träningspass och kan se sin statistik och jämföra med de övriga användarna.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2021
+            </div>
+            <div class="itemcontainer">
+                <div class="item angen" class="modalTrigger">
+                    <img src="assets/img/angen.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee">
+                        </i>
+                    </h2>
+                    <a href="http://www.angentanke.se" target="_blank">
+                        <i class="fas fa-newspaper link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a class="project-title" href="http://www.angentanke.se">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Ängen
+
+                    </a>
+                    <p>Ängen är ett projekt gentemot en "kund" som vill kunna publicera artiklar om hållbarhet i ett smidigt verktyg. Siten är byggd med Ghost CMS som är baserat på Node JS och ett modernare alternativ till Wordpress.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2019
+            </div>
+            <div class="itemcontainer">
+                <div class="item monopoly" class="modalTrigger">
+                    <img src="assets/img/monopoly.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee"></h2>
+                    <!-- <a href="https://livets-maraton.herokuapp.com/" target="_blank"> -->
+                    <a onclick="alert('Updates before 2024-02-23')">
+                        <i class="fas fa-gamepad link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-mongodb mfizz"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Livets Marathon
+                    </a>
+                    <p>Livets Marathon är uppföljning och visualisering av statistik för diverse sport och brädspel. Med inloggningsfunktionaltitet och diverse adminfunktioner.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2018
+            </div>
+            <div class="itemcontainer">
+                <div class="item cip" class="modalTrigger">
+                    <img src="assets/img/hygiene-planner2.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee"></h2>
+                    <!-- <a href="https://hygiene-planner.herokuapp.com/" target="_blank"> -->
+                    <a onclick="alert('Updates before 2024-02-23')">
+
+                        <i class="fas fa-broom link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-mongodb mfizz"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Hygienplaneraren
+                    </a>
+                    <p>Hygienplaneraren är ett projekt för schemaläggning av hygienåtgärder på Carlsberg. Det väldigt
+                        specifika regelverket för på Carlsberg började som ett Excel VBA-program men krävde större
+                        flexibilitet och blev därför vidareutvecklat i NodeJS.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2017
+            </div>
+            <div class="itemcontainer">
+                <div class="item blue" class="modalTrigger">
+                    <img src="assets/img/mathubben.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee"></h2>
+                    <!-- <a href="http://mathubben.herokuapp.com" target="_blank"> -->
+                    <a onclick="alert('Updates before 2024-02-23')">
+                        <i class="fas fa-chart-line link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-mongodb mfizz"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Mathubben
+                    </a>
+                    <p>Mathubben är ett projekt för att skapa en statistik-tjänst för offentligt upphandlade
+                        produkter. Med målet att kunna visualisera köp i form av diverse grafer.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container">
+            <div class="year-container">
+                2016
+            </div>
+            <div class="itemcontainer">
+                <div class="item blue" class="modalTrigger">
+                    <img src="assets/img/foosball.jpg" />
+                    <h2 id="image-overlay" style="position: absolute;bottom: 8px;left: 16px;color:#eee"></h2>
+                    <a onclick="alert('Updates before 2024-02-23')">
+                        <i class="fas fa-futbol link-i"></i>
+                    </a>
+                </div>
+                <div class="description">
+                    <a onclick="alert('Updates before 2024-02-23')" class="project-title not-updated">
+                        <i class="fab fa-html5"></i>
+                        <i class="fab fa-css3"></i>
+                        <i class="fab fa-js"></i>
+                        <i class="icon-mongodb mfizz"></i>
+                        <i class="icon-nodejs mfizz"></i>
+                        Foosball Command Center
+
+                    </a>
+                    <p>Foosball Command Center är byggd för att kunna hålla reda på all statistik ifrån foosball-matcher
+                        på
+                        för
+                        avkopplingstid ifrån jobb. Sidan är byggd med HTML5-CSS-Javascript i frontänden och NodeJS i
+                        bakänden,
+                        samt MongoDB för serverfunktionalitet.</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="packages">
+
+        <h3 class="title">Kodkurser och teknologier</h3>
+        <hr>
+        <ul class="grid courses">
+            <a href="https://www.udemy.com/the-web-developer-bootcamp/">
+                <div class="image">
+                    <img class="course-pic" src="./assets/img/kurser/webdeveloperbootcamp.jpg"
+                        alt="Web developer bootcamp">
+                </div>
+                <div class="coursename">
+                    <h4>Web developer bootcamp</h4>
+                    <p> HTML, CSS, JS, Node</p>
+                </div>
+            </a>
+
+            <a href="https://www.udemy.com/understand-javascript/">
+                <img class="course-pic" src="./assets/img/kurser/javascript.jpg"
+                    alt="Javascript Understanding the Wierd Parts">
+                <h4>Javascript Understanding the Wierd Parts
+                </h4>
+                <p>"learn how Javascript works under the hood"</p>
+            </a>
+
+            <a href="https://javascript30.com/">
+                <img class="course-pic" src="./assets/img/kurser/javascript30.png" alt="Javascript 30">
+                <h4>Javascript 30</h4>
+                <p>30 Day Vanilla JS Coding Challenge</p>
+            </a>
+            <a href="https://www.udemy.com/the-advanced-web-developer-bootcamp/">
+                <img class="course-pic" src="./assets/img/kurser/advancedwebdeveloperbootcamp.jpg"
+                    alt="Advanced Web Developer Bootcamp">
+                <h4>Advanced Web Developer Bootcamp
+                </h4>
+                <p>React 16, Redux, D3, ES2015, Testing, CSS Flexbox, Animations, SVG, AJAX</p>
+            </a>
+            <a href="https://reactforbeginners.com/">
+                <img class="course-pic" src="./assets/img/kurser/reactbeginner.png" alt=">React for beginners">
+                <h4>React for beginners</h4>
+                <p>How to build an entire App or Website Component in React.js from start to finish</p>
+            </a>
+            <a href="https://advancedreact.com/">
+                <img class="course-pic" src="./assets/img/kurser/advancedreact.png" alt="Advanced React">
+                <h4>Advanced React</h4>
+                <p>Build a full stack online clothing store complete with real credit checkout.</p>
+            </a>
+        </ul>
+        <hr>
+
+        <ul class="grid courses">
+            <a href="https://www.udemy.com/csharp-tutorial-for-beginners/" target="_blank">
+                <div class="image">
+                    <img class="course-pic" src="./assets/img/kurser/cbasics.PNG" alt="C# basics">
+                </div>
+                <div class="coursename">
+                    <h4>C# Basics for Beginners</h4>
+                    <p> C# </p>
+                </div>
+            </a>
+
+            <a href="https://www.udemy.com/csharp-tutorial-for-beginners/" target="_blank">
+                <div class="image">
+                    <img class="course-pic" src="./assets/img/kurser/cbasics.PNG" alt="C# basics">
+                </div>
+                <div class="coursename">
+                    <h4>C# Intermediate</h4>
+                    <p> Classes, interfaces and object-oriented programming (OOP) with C# </p>
+                </div>
+            </a>
+
+            <a href="https://www.udemy.com/csharp-advanced/" target="_blank">
+                <div class="image">
+                    <img class="course-pic" src="./assets/img/kurser/cbasics.PNG" alt="C# basics">
+                </div>
+                <div class="coursename">
+                    <h4>C# Advanced</h4>
+                    <p> Events, Delegates, Lambda Expressions, LINQ, Async/Await </p>
+                </div>
+            </a>
+
+            <a href="https://www.udemy.com/the-complete-aspnet-mvc-5-course/" target="_blank">
+                <div class="image">
+                    <img class="course-pic" src="./assets/img/kurser/aspnet.PNG" alt="ASP.NET">
+                </div>
+                <div class="coursename">
+                    <h4>The Complete ASP.NET MVC 5 Course
+                    </h4>
+                    <p> Fast and secure web applications with ASP.NET MVC 5 </p>
+                </div>
+            </a>
+        </ul>
+
+        <hr class="divider">
+
+        <ul style="list-style: none;" class="grid tech">
+            <li>
+                <i class="fab fa-html5"></i>
+                <h4 class="fontawesome">HTML5</h4>
+            </li>
+
+            <li>
+                <i class="fab fa-css3-alt"></i>
+                <h4 class="fontawesome">CSS</h4>
+            </li>
+            <li>
+                <i class="fab fa-js"></i>
+                <h4 class="fontawesome">Javascript</h4>
+            </li>
+            <li>
+                <i class="icon-reactjs mfizz"></i>
+                <h4>React</h4>
+            </li>
+            <li>
+                <i class="icon-mongodb mfizz"></i>
+                <h4>MongoDB</h4>
+            </li>
+            <li>
+                <i class="icon-python mfizz"></i>
+                <h4>Python</h4>
+            </li>
+            <li>
+                <i class="icon-nodejs mfizz"></i>
+                <h4>Node JS</h4>
+            </li>
+
+            <li>
+                <i class="icon-csharp mfizz"></i>
+                <h4>C#</h4>
+            </li>
+
+            <li>
+                <i class="icon-mssql mfizz"></i>
+                <h4>SQL</h4>
+            </li>
+
+            <li>
+                <i class="fas fa-file-excel"></i>
+                <h4 class="fontawesome">Excel VBA</h4>
+            </li>
+
+        </ul>
+    </section>
+
+</body>
+
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+</html>

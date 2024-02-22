@@ -1,0 +1,42 @@
+<% include ./partials/header.ejs %>
+<link rel="stylesheet" href="css/stats.css">
+    <!-- Register Page -->
+    <div class="container">
+        <div class="register">
+            <h1>Vroomligan</h1>
+            <% include ./partials/buttons.ejs %>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Namn</th>
+                        <th>Vroom<br>Win</th>
+                        <th>Vroom<br>Lost</th>
+                        <th>Bounty<br>Win</th>
+                        <th>Bounty<br>Lost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% dataname.forEach(player => { %>
+                    <tr>
+                        <td><%= player.Spelare %></td>
+                        <td><%= player.vroomWinCount%></td>
+                        <td><%= player.vroomLostCount%></td>
+                        <td><%= player.bountyWinCount%></td>
+                        <td><%= player.bountyLostCount%></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- //Register Page -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

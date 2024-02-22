@@ -1,0 +1,36 @@
+html {
+    margin: 0;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+
+body {
+    background-image: url(../img/pingis_field.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.landing {
+    font-family: "Raleway", sans-serif;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 10%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 50px;
+}
+
+.landing h1, h3 {
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+                 0px 8px 13px rgba(0,0,0,0.1),
+                 0px 18px 23px rgba(0,0,0,0.1);
+
+    font-weight: 700;
+}
+
+button {
+    margin: 10px;
+}
+

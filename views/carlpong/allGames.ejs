@@ -1,0 +1,47 @@
+<% include ./partials/header.ejs %>
+<link rel="stylesheet" href="css/stats.css">
+    <!-- Register Page -->
+    <div class="container">
+        <div class="register">
+            <h1>Ta bort matcher</h1>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>L1S1</th>
+                        <th>L1S2</th>
+                        <th>ML1</th>
+                        <th>L2S1</th>
+                        <th>L2S2</th>
+                        <th>ML2</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% dataname.forEach(stats => { %>
+                    <tr>
+                        <td><%= stats["Tidstämpel"] %></td>
+                        <td><%= stats["Lag1Spelare1"] %></td>
+                        <td><%= stats["Lag1Spelare2"] %></td>
+                        <td><%= stats["Lag1"] %></td>
+                        <td><%= stats["Lag2Spelare1"] %></td>
+                        <td><%= stats["Lag2Spelare2"] %></td>
+                        <td><%= stats["Lag2"] %></td>
+                        <td><a name="" id="" class="btn btn-danger noMargin" href="/carlpong/removeGame/<%= stats['_id'] %>" role="button">Tag bort</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- //Register Page -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
