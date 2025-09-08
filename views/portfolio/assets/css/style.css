@@ -446,6 +446,15 @@ div.item.solas .link-i {
 	color: #921102;
 }
 
+div.item.coachen {
+	background-color: #849787;
+}
+
+div.item.coachen .link-i {
+	color: #849787;
+}
+
+
 div.item.monopoly {
 	background-color: rgb(37, 131, 107);
 }
@@ -549,7 +558,11 @@ div.item .imageoverlay {
 /* CV */
 
 #cv {
-	background-image: url('../../../portfolio/assets/img/bg/what-the-hex.png');
+	background-color: #e5e5f7;
+	opacity: 0.8;
+	background-image:  linear-gradient(30deg, #d2d0d0 12%, transparent 12.5%, transparent 87%, #d2d0d0 87.5%, #d2d0d0), linear-gradient(150deg, #d2d0d0 12%, transparent 12.5%, transparent 87%, #d2d0d0 87.5%, #d2d0d0), linear-gradient(30deg, #d2d0d0 12%, transparent 12.5%, transparent 87%, #d2d0d0 87.5%, #d2d0d0), linear-gradient(150deg, #d2d0d0 12%, transparent 12.5%, transparent 87%, #d2d0d0 87.5%, #d2d0d0), linear-gradient(60deg, #d2d0d077 25%, transparent 25.5%, transparent 75%, #d2d0d077 75%, #d2d0d077), linear-gradient(60deg, #d2d0d077 25%, transparent 25.5%, transparent 75%, #d2d0d077 75%, #d2d0d077);
+	background-size: 14px 25px;
+	background-position: 0 0, 0 0, 7px 12px, 7px 12px, 0 0, 7px 12px;
 }
 
 .attached{
@@ -704,3 +717,4 @@ hr.divider {
 		text-align: left;
 	}
 }
+
