@@ -327,6 +327,13 @@ footer p {
 }
 
 /* Projects section */
+
+#projects {
+	background-color: #e5e5f7;
+	opacity: 0.8;
+	background: radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#a8a8a8 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #a8a8a8 2px, #e5e5f7 2px) -1px 0;
+	background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;}
+
 div.itemcontainer {
 	background-color: white;
 	max-width: 450px;
@@ -341,20 +348,7 @@ div.itemcontainer {
 }
 
 div.year-container {
-	background-color: white;
-	max-width: 50px;
-	padding: 0px;
-	align-items: center;
-	border: 2px solid #ccc;
-	border-radius: 15px;
-	text-align: justify;
-	box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
-	margin: 10px 0px 10px;
-	font-size: 1.2rem;
-	writing-mode: vertical-rl;
-	text-orientation: upright;
-	text-align: center;
-	font-weight: bold;
+	text-align: center; font-size: 24px; font-weight: 800; width: 100%;
 }
 
 .itemcontainer h2 {
